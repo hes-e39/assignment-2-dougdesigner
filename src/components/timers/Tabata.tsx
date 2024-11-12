@@ -1,11 +1,11 @@
-import Panel from '../generic/Panel';
 import Button from '../generic/Button';
-import DisplayTime from '../generic/DisplayTime';
-import TabataInput from '../generic/TabataInput';
+import DisplayMode from '../generic/DisplayMode';
 import DisplayRounds from '../generic/DisplayRounds';
-import DisplayRest from '../generic/DisplayRest';
+import DisplayTime from '../generic/DisplayTime';
+import Panel from '../generic/Panel';
+import TabataInput from '../generic/TabataInput';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const Tabata = () => {
     const [inputWorkMinutes, setInputWorkMinutes] = useState(0);
@@ -22,8 +22,8 @@ const Tabata = () => {
 
     const [timerMode, setTimerMode] = useState<'work' | 'rest'>('work');
 
-    const workMilliseconds = (inputWorkMinutes * 60000) + (inputWorkSeconds * 1000);
-    const restMilliseconds = (inputRestMinutes * 60000) + (inputRestSeconds * 1000);
+    const workMilliseconds = inputWorkMinutes * 60000 + inputWorkSeconds * 1000;
+    const restMilliseconds = inputRestMinutes * 60000 + inputRestSeconds * 1000;
 
     const targetMilliseconds = timerMode === 'work' ? workMilliseconds : restMilliseconds;
 
@@ -33,7 +33,7 @@ const Tabata = () => {
     const getHundredths = () => Math.floor((totalMilliseconds % 1000) / 10);
 
     // Reset timer function
-    const resetTimer = ()  => {
+    const resetTimer = () => {
         setIsRunning(false);
         setIsPaused(false);
         setIsCompleted(false);
@@ -45,7 +45,7 @@ const Tabata = () => {
 
     // Countdown function
     const tick = () => {
-        setTotalMilliseconds((prevMilliseconds) => {
+        setTotalMilliseconds(prevMilliseconds => {
             if (prevMilliseconds > 0) {
                 return prevMilliseconds - 10;
             } else {
@@ -108,23 +108,23 @@ const Tabata = () => {
 
     // Input change functions
     const handWorkMinutesChange = (minutes: number) => {
-        setInputWorkMinutes(minutes)
-        setTotalMilliseconds((minutes * 60000) + (inputWorkSeconds * 1000));
+        setInputWorkMinutes(minutes);
+        setTotalMilliseconds(minutes * 60000 + inputWorkSeconds * 1000);
     };
 
     const handleWorkSecondsChange = (seconds: number) => {
         setInputWorkSeconds(seconds);
-        setTotalMilliseconds((inputWorkMinutes * 60000) + (seconds * 1000));
+        setTotalMilliseconds(inputWorkMinutes * 60000 + seconds * 1000);
     };
 
     const handleRestMinutesChange = (minutes: number) => {
         setInputRestMinutes(minutes);
-        setTotalMilliseconds((minutes * 60000) + (inputRestSeconds * 1000));
+        setTotalMilliseconds(minutes * 60000 + inputRestSeconds * 1000);
     };
 
     const handleRestSecondsChange = (seconds: number) => {
         setInputRestSeconds(seconds);
-        setTotalMilliseconds((inputRestMinutes * 60000) + (seconds * 1000));
+        setTotalMilliseconds(inputRestMinutes * 60000 + seconds * 1000);
     };
 
     const handleRoundsChange = (rounds: number) => {
@@ -133,7 +133,7 @@ const Tabata = () => {
 
     // Check if input is valid
     const inputValid = () => {
-        return (inputWorkMinutes > 0 || inputWorkSeconds > 0);
+        return inputWorkMinutes > 0 || inputWorkSeconds > 0;
     };
 
     // Clear interval on unmount
@@ -147,23 +147,18 @@ const Tabata = () => {
         <Panel
             title="Tabata"
             description="An interval timer with work/rest periods. Example: 20s/10s, 8 rounds, would count down from 20 seconds to 0, then count down from 10 seconds to 0, then from 20, then from 10, etc, for 8 rounds. A full round includes both the work and rest. In this case, 20+10=30 seconds per round."
-            >
-
+        >
             <div className="w-full flex justify-center">
-                <DisplayTime
-                    minutes={getMinutes()}
-                    seconds={getSeconds()}
-                    hundredths={getHundredths()}
-                />
+                <DisplayTime minutes={getMinutes()} seconds={getSeconds()} hundredths={getHundredths()} />
             </div>
 
             <div className="flex justify-center">
-                <DisplayRest mode={timerMode} />
-                <DisplayRounds rounds={rounds} currentRound={currentRoundRef.current} />  
+                <DisplayMode mode={timerMode} />
+                <DisplayRounds rounds={rounds} currentRound={currentRoundRef.current} />
             </div>
 
             <hr className="border-slate-700" />
-               
+
             <div className="w-full flex justify-center">
                 <TabataInput
                     workMinutes={inputWorkMinutes}
@@ -178,7 +173,7 @@ const Tabata = () => {
                     onRoundsChange={handleRoundsChange}
                     disabled={isRunning || isPaused || isCompleted}
                 />
-            </div>  
+            </div>
 
             <div className="flex flex-col w-full space-y-4 mt-5">
                 {!isCompleted && (
@@ -195,13 +190,9 @@ const Tabata = () => {
                     </>
                 )}
 
-                {(isRunning || isPaused || isCompleted) && (
-                    <Button type="reset" onClick={resetTimer} />
-                )}
+                {(isRunning || isPaused || isCompleted) && <Button type="reset" onClick={resetTimer} />}
 
-                {isRunning && !isCompleted && (
-                    <Button type="fastforward" onClick={fastForwardTimer} />
-                )}
+                {isRunning && !isCompleted && <Button type="fastforward" onClick={fastForwardTimer} />}
             </div>
         </Panel>
     );
