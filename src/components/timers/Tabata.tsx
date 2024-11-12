@@ -176,7 +176,7 @@ const Tabata = () => {
             </div>
 
             {/* Timer Buttons */}
-            <div className="flex flex-col w-full space-y-4 mt-5">
+            <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
                 {!isCompleted && (
                     <>
                         {isRunning ? (
