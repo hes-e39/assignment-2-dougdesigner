@@ -6,6 +6,7 @@ import Panel from '../generic/Panel';
 import TabataInputs from '../generic/TabataInputs';
 
 import { useEffect, useRef, useState } from 'react';
+import { getMinutes, getSeconds, getHundredths } from '../../utils/helpers';
 
 const Tabata = () => {
     const [inputWorkMinutes, setInputWorkMinutes] = useState(0);
@@ -19,18 +20,11 @@ const Tabata = () => {
     const [isCompleted, setIsCompleted] = useState(false);
     const currentRoundRef = useRef<number>(1);
     const intervalRef = useRef<number | null>(null);
-
     const [timerMode, setTimerMode] = useState<'work' | 'rest'>('work');
 
     const workMilliseconds = inputWorkMinutes * 60000 + inputWorkSeconds * 1000;
     const restMilliseconds = inputRestMinutes * 60000 + inputRestSeconds * 1000;
-
     const targetMilliseconds = timerMode === 'work' ? workMilliseconds : restMilliseconds;
-
-    // Time functions
-    const getMinutes = () => Math.floor(totalMilliseconds / 60000);
-    const getSeconds = () => Math.floor((totalMilliseconds % 60000) / 1000);
-    const getHundredths = () => Math.floor((totalMilliseconds % 1000) / 10);
 
     // Reset timer function
     const resetTimer = () => {
@@ -148,8 +142,13 @@ const Tabata = () => {
             title="Tabata"
             description="An interval timer with work/rest periods. Example: 20s/10s, 8 rounds, would count down from 20 seconds to 0, then count down from 10 seconds to 0, then from 20, then from 10, etc, for 8 rounds. A full round includes both the work and rest. In this case, 20+10=30 seconds per round."
         >
+            {/* Timer Display */}
             <div className="w-full flex justify-center">
-                <DisplayTime minutes={getMinutes()} seconds={getSeconds()} hundredths={getHundredths()} />
+                <DisplayTime 
+                    minutes={getMinutes(totalMilliseconds)} 
+                    seconds={getSeconds(totalMilliseconds)} 
+                    hundredths={getHundredths(totalMilliseconds)} 
+                />
             </div>
 
             <div className="flex justify-center">
@@ -159,6 +158,7 @@ const Tabata = () => {
 
             <hr className="border-slate-700" />
 
+            {/* Timer Inputs */}
             <div className="w-full flex justify-center">
                 <TabataInputs
                     workMinutes={inputWorkMinutes}
@@ -175,6 +175,7 @@ const Tabata = () => {
                 />
             </div>
 
+            {/* Timer Buttons */}
             <div className="flex flex-col w-full space-y-4 mt-5">
                 {!isCompleted && (
                     <>

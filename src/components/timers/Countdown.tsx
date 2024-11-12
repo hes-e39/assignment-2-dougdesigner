@@ -4,6 +4,7 @@ import Inputs from '../generic/Inputs';
 import Panel from '../generic/Panel';
 
 import { useEffect, useRef, useState } from 'react';
+import { getDisplayMinutes, getDisplaySeconds, getDisplayHundredths } from '../../utils/helpers';
 
 const Countdown = () => {
     const [inputMinutes, setInputMinutes] = useState(0);
@@ -15,39 +16,6 @@ const Countdown = () => {
     const intervalRef = useRef<number | null>(null);
 
     const targetMilliseconds = inputMinutes * 60000 + inputSeconds * 1000;
-
-    // Time functions
-    const getMinutes = () => Math.floor(totalMilliseconds / 60000);
-    const getSeconds = () => Math.floor((totalMilliseconds % 60000) / 1000);
-    const getHundredths = () => Math.floor((totalMilliseconds % 1000) / 10);
-
-    // Display time functions
-    const getDisplayMinutes = () => {
-        if (totalMilliseconds === 0 && !isRunning) {
-            return 0;
-        }
-        if (isRunning || totalMilliseconds > 0) {
-            return getMinutes();
-        }
-        return inputMinutes;
-    };
-
-    const getDisplaySeconds = () => {
-        if (totalMilliseconds === 0 && !isRunning) {
-            return 0;
-        }
-        if (isRunning || totalMilliseconds > 0) {
-            return getSeconds();
-        }
-        return inputSeconds;
-    };
-
-    const getDisplayHundredths = () => {
-        if (isRunning) {
-            return getHundredths();
-        }
-        return 0;
-    };
 
     // Reset timer function
     const resetTimer = () => {
@@ -127,16 +95,23 @@ const Countdown = () => {
 
     return (
         <Panel title="Countdown" description="A timer that counts down from X amount of time (e.g. count down to 0, starting at 2 minutes and 30)">
+            {/* Timer Display */}
             <div className="w-full flex justify-center">
-                <DisplayTime minutes={getDisplayMinutes()} seconds={getDisplaySeconds()} hundredths={getDisplayHundredths()} />
+                <DisplayTime 
+                    minutes={getDisplayMinutes(totalMilliseconds, isRunning, inputMinutes)}
+                    seconds={getDisplaySeconds(totalMilliseconds, isRunning, inputSeconds)}
+                    hundredths={getDisplayHundredths(totalMilliseconds, isRunning)}
+                />
             </div>
 
             <hr className="border-slate-700" />
 
+            {/* Timer Inputs */}
             <div className="w-full flex justify-center">
                 <Inputs minutes={inputMinutes} seconds={inputSeconds} onMinutesChange={handleMinutesChange} onSecondsChange={handleSecondsChange} disabled={isRunning || isPaused || isCompleted} />
             </div>
 
+            {/* Timer Buttons */}
             <div className="flex flex-col w-full space-y-4 mt-5">
                 {!isCompleted && (
                     <>{isRunning ? <Button type={isPaused ? 'resume' : 'pause'} onClick={isPaused ? resumeTimer : pauseTimer} /> : inputValid() && <Button type="start" onClick={startTimer} />}</>

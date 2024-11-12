@@ -5,6 +5,7 @@ import Inputs from '../generic/Inputs';
 import Panel from '../generic/Panel';
 
 import { useEffect, useRef, useState } from 'react';
+import { getMinutes, getSeconds, getHundredths } from '../../utils/helpers';
 
 const XY = () => {
     const [inputMinutes, setInputMinutes] = useState(0);
@@ -18,11 +19,6 @@ const XY = () => {
     const intervalRef = useRef<number | null>(null);
 
     const targetMilliseconds = inputMinutes * 60000 + inputSeconds * 1000;
-
-    // Time functions
-    const getMinutes = () => Math.floor(totalMilliseconds / 60000);
-    const getSeconds = () => Math.floor((totalMilliseconds % 60000) / 1000);
-    const getHundredths = () => Math.floor((totalMilliseconds % 1000) / 10);
 
     // Reset timer function
     const resetTimer = () => {
@@ -127,14 +123,20 @@ const XY = () => {
             title="XY"
             description="A timer that counts down from X time per round, for Y number of rounds (e.g. 1 minute for 10 minutes would count down from 1 minute to 0, then start another countdown, etc, 10 times"
         >
+            {/* Timer Display */}
             <div className="w-full flex justify-center">
-                <DisplayTime minutes={getMinutes()} seconds={getSeconds()} hundredths={getHundredths()} />
+                <DisplayTime 
+                    minutes={getMinutes(totalMilliseconds)} 
+                    seconds={getSeconds(totalMilliseconds)} 
+                    hundredths={getHundredths(totalMilliseconds)} 
+                />
             </div>
 
             <DisplayRounds rounds={rounds} currentRound={currentRoundRef.current} />
 
             <hr className="border-slate-700" />
 
+            {/* Timer Inputs */}
             <div className="w-full flex justify-center">
                 <Inputs
                     minutes={inputMinutes}
@@ -147,6 +149,7 @@ const XY = () => {
                 />
             </div>
 
+            {/* Timer Buttons */}
             <div className="flex flex-col w-full space-y-4 mt-5">
                 {!isCompleted && (
                     <>

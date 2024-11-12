@@ -4,6 +4,7 @@ import Inputs from '../generic/Inputs';
 import Panel from '../generic/Panel';
 
 import { useEffect, useRef, useState } from 'react';
+import { getMinutes, getSeconds, getHundredths } from '../../utils/helpers';
 
 const Stopwatch = () => {
     const [inputMinutes, setInputMinutes] = useState(0);
@@ -15,11 +16,6 @@ const Stopwatch = () => {
     const intervalRef = useRef<number | null>(null);
 
     const targetMilliseconds = inputMinutes * 60000 + inputSeconds * 1000;
-
-    // Time functions
-    const getMinutes = () => Math.floor(totalMilliseconds / 60000);
-    const getSeconds = () => Math.floor((totalMilliseconds % 60000) / 1000);
-    const getHundredths = () => Math.floor((totalMilliseconds % 1000) / 10);
 
     // Stopwatch function
     const tick = () => {
@@ -92,16 +88,23 @@ const Stopwatch = () => {
 
     return (
         <Panel title="Stopwatch" description="A timer that counts up to X amount of time (e.g. count up to 2 minutes and 30 seconds, starting at 0) ">
+            {/* Timer Display */}
             <div className="w-full flex justify-center">
-                <DisplayTime minutes={getMinutes()} seconds={getSeconds()} hundredths={getHundredths()} />
+                <DisplayTime 
+                    minutes={getMinutes(totalMilliseconds)} 
+                    seconds={getSeconds(totalMilliseconds)} 
+                    hundredths={getHundredths(totalMilliseconds)} 
+                />
             </div>
 
             <hr className="border-slate-700" />
 
+            {/* Timer Inputs */}
             <div className="w-full flex justify-center">
                 <Inputs minutes={inputMinutes} seconds={inputSeconds} onMinutesChange={handleMinutesChange} onSecondsChange={handleSecondsChange} disabled={isRunning || isPaused || isCompleted} />
             </div>
 
+            {/* Timer Buttons */}
             <div className="flex flex-col w-full space-y-4 mt-5">
                 {!isCompleted && (
                     <>

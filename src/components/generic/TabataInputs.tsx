@@ -1,5 +1,9 @@
 import Select from './Select';
 
+const minuteOptions = Array.from({ length: 61 }, (_, i) => i);
+const secondOptions = Array.from({ length: 60 }, (_, i) => i);
+const roundOptions = Array.from({ length: 30 }, (_, i) => i + 1);
+
 interface TabataInputProps {
     workMinutes: number;
     workSeconds: number;
@@ -27,14 +31,11 @@ const TabataInput: React.FC<TabataInputProps> = ({
     onRoundsChange = () => {},
     disabled = false,
 }) => {
-    const minuteOptions = Array.from({ length: 61 }, (_, i) => i);
-    const secondOptions = Array.from({ length: 60 }, (_, i) => i);
-    const roundOptions = Array.from({ length: 30 }, (_, i) => i + 1);
 
     return (
         <div className="flex flex-col space-y-4 items-center mt-8">
             <div className="flex space-x-4">
-                <h1 className="text-lg font-semibold text-white self-center">Work:</h1>
+                <h1 className="text-lg font-semibold text-white self-center">Work Period:</h1>
                 <Select
                     id="workMinutes"
                     label="Minutes"
@@ -54,7 +55,7 @@ const TabataInput: React.FC<TabataInputProps> = ({
             </div>
 
             <div className="flex space-x-4">
-                <h1 className="text-lg font-semibold text-white self-center">Rest:</h1>
+                <h1 className="text-lg font-semibold text-white self-center">Rest Period:</h1>
                 <Select
                     id="restMinutes"
                     label="Minutes"
