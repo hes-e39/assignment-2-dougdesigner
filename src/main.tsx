@@ -14,8 +14,7 @@ import DocumentationView from "./views/DocumentationView";
 const PageIndex = () => {
   return (
     <div>
-      <h1 className="text-lg font-semibold">Assignment 1</h1>
-      <h2 className="text-md font-semibold">Douglas Sanchez</h2>
+      <h1 className="text-lg font-semibold">Assignment 2 - Douglas Sanchez</h1>
       <ul>
         <li>
           <Link to="/">Timers</Link>
