@@ -3,7 +3,7 @@ import DisplayMode from '../generic/DisplayMode';
 import DisplayRounds from '../generic/DisplayRounds';
 import DisplayTime from '../generic/DisplayTime';
 import Panel from '../generic/Panel';
-import TabataInput from '../generic/TabataInput';
+import TabataInputs from '../generic/TabataInputs';
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -160,7 +160,7 @@ const Tabata = () => {
             <hr className="border-slate-700" />
 
             <div className="w-full flex justify-center">
-                <TabataInput
+                <TabataInputs
                     workMinutes={inputWorkMinutes}
                     workSeconds={inputWorkSeconds}
                     restMinutes={inputRestMinutes}

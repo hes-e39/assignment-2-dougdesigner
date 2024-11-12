@@ -1,10 +1,10 @@
 import Button from '../generic/Button';
-import DisplayTime from '../generic/DisplayTime';
-import Input from '../generic/Input';
-import Panel from '../generic/Panel';
 import DisplayRounds from '../generic/DisplayRounds';
+import DisplayTime from '../generic/DisplayTime';
+import Inputs from '../generic/Inputs';
+import Panel from '../generic/Panel';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const XY = () => {
     const [inputMinutes, setInputMinutes] = useState(0);
@@ -17,7 +17,7 @@ const XY = () => {
     const currentRoundRef = useRef<number>(1);
     const intervalRef = useRef<number | null>(null);
 
-    const targetMilliseconds = (inputMinutes * 60000) + (inputSeconds * 1000);
+    const targetMilliseconds = inputMinutes * 60000 + inputSeconds * 1000;
 
     // Time functions
     const getMinutes = () => Math.floor(totalMilliseconds / 60000);
@@ -25,7 +25,7 @@ const XY = () => {
     const getHundredths = () => Math.floor((totalMilliseconds % 1000) / 10);
 
     // Reset timer function
-    const resetTimer = ()  => {
+    const resetTimer = () => {
         setIsRunning(false);
         setIsPaused(false);
         setIsCompleted(false);
@@ -36,7 +36,7 @@ const XY = () => {
 
     // Countdown function
     const tick = () => {
-        setTotalMilliseconds((prevMilliseconds) => {
+        setTotalMilliseconds(prevMilliseconds => {
             if (prevMilliseconds > 0) {
                 return prevMilliseconds - 10;
             } else {
@@ -95,14 +95,14 @@ const XY = () => {
     const handleMinutesChange = (minutes: number) => {
         setInputMinutes(minutes);
         if (!isRunning) {
-            setTotalMilliseconds((minutes * 60000) + (inputSeconds * 1000));
+            setTotalMilliseconds(minutes * 60000 + inputSeconds * 1000);
         }
     };
 
     const handleSecondsChange = (seconds: number) => {
         setInputSeconds(seconds);
         if (!isRunning) {
-            setTotalMilliseconds((inputMinutes * 60000) + (seconds * 1000));
+            setTotalMilliseconds(inputMinutes * 60000 + seconds * 1000);
         }
     };
 
@@ -112,7 +112,7 @@ const XY = () => {
 
     // Check if input is valid
     const inputValid = () => {
-        return (inputMinutes > 0 || inputSeconds > 0);
+        return inputMinutes > 0 || inputSeconds > 0;
     };
 
     // Clear interval on unmount
@@ -128,11 +128,7 @@ const XY = () => {
             description="A timer that counts down from X time per round, for Y number of rounds (e.g. 1 minute for 10 minutes would count down from 1 minute to 0, then start another countdown, etc, 10 times"
         >
             <div className="w-full flex justify-center">
-                <DisplayTime
-                    minutes={getMinutes()}
-                    seconds={getSeconds()}
-                    hundredths={getHundredths()}
-                />
+                <DisplayTime minutes={getMinutes()} seconds={getSeconds()} hundredths={getHundredths()} />
             </div>
 
             <DisplayRounds rounds={rounds} currentRound={currentRoundRef.current} />
@@ -140,7 +136,7 @@ const XY = () => {
             <hr className="border-slate-700" />
 
             <div className="w-full flex justify-center">
-                <Input 
+                <Inputs
                     minutes={inputMinutes}
                     seconds={inputSeconds}
                     rounds={rounds}
@@ -150,7 +146,6 @@ const XY = () => {
                     disabled={isRunning || isPaused || isCompleted}
                 />
             </div>
-
 
             <div className="flex flex-col w-full space-y-4 mt-5">
                 {!isCompleted && (
@@ -167,13 +162,9 @@ const XY = () => {
                     </>
                 )}
 
-                {(isRunning || isPaused || isCompleted) && (   
-                    <Button type="reset" onClick={resetTimer} />
-                )}
+                {(isRunning || isPaused || isCompleted) && <Button type="reset" onClick={resetTimer} />}
 
-                {isRunning && !isCompleted && (
-                    <Button type="fastforward" onClick={fastForwardTimer} />
-                )}
+                {isRunning && !isCompleted && <Button type="fastforward" onClick={fastForwardTimer} />}
             </div>
         </Panel>
     );
