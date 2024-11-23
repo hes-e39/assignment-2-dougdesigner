@@ -10,6 +10,8 @@ import {
 import "./index.css";
 import TimersView from "./views/TimersView";
 import DocumentationView from "./views/DocumentationView";
+import WorkoutView from "./views/WorkoutView";
+import AddTimerView from "./views/AddTimerView";
 
 const PageIndex = () => {
   return (
@@ -23,7 +25,8 @@ const PageIndex = () => {
               </div>
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
-                  <NavLink
+
+                    <NavLink
                       to="/"
                       className={({ isActive }) =>
                         isActive
@@ -31,7 +34,27 @@ const PageIndex = () => {
                           : "rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                       }
                     >
+                      Workout
+                    </NavLink>
+                    <NavLink
+                      to="/timers"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+                          : "rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      }
+                    >
                       Timers
+                    </NavLink>
+                    <NavLink
+                      to="/add"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+                          : "rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      }
+                    >
+                      Add
                     </NavLink>
                     <NavLink
                       to="/docs"
@@ -99,7 +122,15 @@ const router = createHashRouter([
     children: [
       {
         index: true,
+        element: <WorkoutView />,
+      },
+      {
+        path: "/timers",
         element: <TimersView />,
+      },
+      {
+        path: "/add",
+        element: <AddTimerView />,
       },
       {
         path: "/docs",
