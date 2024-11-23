@@ -118,21 +118,21 @@ const AddTimerView = () => {
         <div className="mt-4 flex md:ml-4 md:mt-0">
           <NavLink
             to="/"
-            className="inline-flex items-center rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
+            className="inline-flex items-center rounded-full bg-slate-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-800"
           >
-            Cancel
+            Go to workout
           </NavLink>
           <button
             type="button"
             onClick={handleSave}
             disabled={!timerType || !isTimerValid} // Use isTimerValid for button state
-            className={`ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm ${
+            className={`ml-3 inline-flex items-center rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
               !timerType || !isTimerValid
-                ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
-                : 'bg-indigo-500 text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'
+                ? 'cursor-not-allowed bg-slate-800 focus-visible:outline-slate-800'
+                : 'bg-indigo-600  hover:bg-indigo-500  focus-visible:outline-indigo-600'
             }`}
           >
-            Save
+            Save timer
           </button>
         </div>
       </div>

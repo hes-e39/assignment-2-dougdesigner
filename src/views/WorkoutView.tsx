@@ -33,18 +33,21 @@ const WorkoutView = () => {
                     </h2>
                 </div>
                 <div className="mt-4 flex md:ml-4 md:mt-0">
-                    {/* A button to "Add" a new timer. This button brings the user to the /add screen */}
+                    {/* Button to add a new timer */}
                     <NavLink
                         to="/add"
-                        className="ml-3 inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                        className="ml-3 inline-flex items-center rounded-full bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
-                        Add
+                        Add timer
                     </NavLink>
                 </div>
             </div>
 
             <div className="flex flex-col items-center">
-                {/* The total time the workout will take */}
+                {/* Total workout time */}
+                <p className="text-lg text-slate-300 font-semibold text-center">
+                    Total workout time
+                </p>
                 <DisplayTime
                     minutes={Math.floor(totalWorkoutTime / 60)}
                     seconds={totalWorkoutTime % 60}
@@ -54,7 +57,7 @@ const WorkoutView = () => {
                 {/* Timers List */}
                 <ul role="list" className="divide-y divide-white/5 mt-6 w-full max-w-lg">
                 {timers.length === 0 ? (
-                    <p className="text-gray-500 text-center">No timers added yet.</p>
+                    <p className="text-slate-500 text-center">No timers added yet.</p>
                 ) : (
                     timers.map((timer, index) => (
                     <li
@@ -80,7 +83,7 @@ const WorkoutView = () => {
                         </div>
                         <div className="mt-3 flex items-center gap-x-2.5 text-xs/5 text-gray-400">
                             <p>
-                            <strong>Work:</strong> {timer.workTime.minutes}m{" "}
+                            <strong>Work</strong> {timer.workTime.minutes}m{" "}
                             {timer.workTime.seconds}s
                             </p>
                             {timer.restTime && (
@@ -92,7 +95,7 @@ const WorkoutView = () => {
                                 <circle cx="1" cy="1" r="1" />
                                 </svg>
                                 <p>
-                                <strong>Rest:</strong> {timer.restTime.minutes}m{" "}
+                                <strong>Rest</strong> {timer.restTime.minutes}m{" "}
                                 {timer.restTime.seconds}s
                                 </p>
                             </>
@@ -106,7 +109,7 @@ const WorkoutView = () => {
                                 <circle cx="1" cy="1" r="1" />
                                 </svg>
                                 <p>
-                                <strong>Rounds:</strong> {timer.rounds}
+                                <strong>Rounds</strong> {timer.rounds}
                                 </p>
                             </>
                             )}
