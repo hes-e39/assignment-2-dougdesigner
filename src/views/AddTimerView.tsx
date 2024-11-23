@@ -1,17 +1,20 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Stopwatch from '../components/timers/Stopwatch';
 import Countdown from '../components/timers/Countdown';
 import Tabata from '../components/timers/Tabata';
 import XY from '../components/timers/XY';
 import { useWorkout } from '../context/WorkoutContext';
 import { v4 as uuidv4 } from 'uuid'; // For generating unique IDs for timers
+import TimersList from '../components/generic/TimersList';
 
 const AddTimerView = () => {
-  const { addTimer } = useWorkout(); // Use the custom hook to access the context
+  const { timers, addTimer, removeTimer } = useWorkout(); // Use the custom hook to access the context
   const [timerType, setTimerType] = useState<string | null>(null);
   const [timerConfig, setTimerConfig] = useState<any>(null); // Store the configuration for the current timer
   const [isTimerValid, setIsTimerValid] = useState(false); // Track if the timer is valid
+
+  const navigate = useNavigate(); // Initialize navigate hook
 
   const handleSave = () => {
     if (timerType && timerConfig && isTimerValid) {
@@ -24,6 +27,7 @@ const AddTimerView = () => {
       addTimer(timer);
       alert('Timer added successfully!');
       resetForm();
+      navigate('/'); // Redirect to /work after saving
     } else {
       alert('Configure a valid timer before saving.');
     }
@@ -120,7 +124,10 @@ const AddTimerView = () => {
             to="/"
             className="inline-flex items-center rounded-full bg-slate-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-800"
           >
-            Go to workout
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="-ml-0.5 mr-1.5 size-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+            </svg>
+            Back
           </NavLink>
           <button
             type="button"
@@ -167,6 +174,13 @@ const AddTimerView = () => {
 
         <div className="md:flex md:items-center md:justify-between py-8">
           {renderTimerInputs()}
+        </div>
+
+        <div className="hidden mx-auto w-full max-w-sm">
+          <TimersList
+            timers={timers}
+            onRemoveTimer={removeTimer}
+          />
         </div>
       </div>
     </div>
