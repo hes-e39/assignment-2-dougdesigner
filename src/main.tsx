@@ -13,6 +13,8 @@ import DocumentationView from "./views/DocumentationView";
 import WorkoutView from "./views/WorkoutView";
 import AddTimerView from "./views/AddTimerView";
 
+import { WorkoutProvider } from "./context/WorkoutContext";
+
 const PageIndex = () => {
   return (
     <div>
@@ -25,7 +27,6 @@ const PageIndex = () => {
               </div>
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
-
                     <NavLink
                       to="/"
                       className={({ isActive }) =>
@@ -37,16 +38,6 @@ const PageIndex = () => {
                       Workout
                     </NavLink>
                     <NavLink
-                      to="/timers"
-                      className={({ isActive }) =>
-                        isActive
-                          ? "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                          : "rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                      }
-                    >
-                      Timers
-                    </NavLink>
-                    <NavLink
                       to="/add"
                       className={({ isActive }) =>
                         isActive
@@ -55,6 +46,16 @@ const PageIndex = () => {
                       }
                     >
                       Add
+                    </NavLink>
+                    <NavLink
+                      to="/timers"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+                          : "rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      }
+                    >
+                      Timers
                     </NavLink>
                     <NavLink
                       to="/docs"
@@ -118,7 +119,11 @@ const PageIndex = () => {
 const router = createHashRouter([
   {
     path: "/",
-    element: <PageIndex />,
+    element:  (
+      <WorkoutProvider>
+        <PageIndex />
+      </WorkoutProvider>
+    ),
     children: [
       {
         index: true,
