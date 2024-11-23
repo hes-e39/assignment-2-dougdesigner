@@ -51,61 +51,80 @@ const WorkoutView = () => {
                     hundredths={0} // Static, not applicable for this calculation
                 />
 
-                {/* List of timers to be run for a workout. User should be able to remove a timer */}
-                <div className="flex flex-col items-center w-full mt-4">
-                    {timers.length === 0 ? (
-                        <p className="text-gray-500">No timers added yet.</p>
-                    ) : (
-                        <ul className="space-y-2 w-full max-w-lg">
-                            {timers.map((timer, index) => (
-                                <li
-                                    key={timer.id}
-                                    className={`p-4 border rounded-md ${
-                                        index === currentTimerIndex
-                                            ? "bg-green-100"
-                                            : timer.state === "completed"
-                                            ? "bg-gray-100"
-                                            : "bg-white"
-                                    }`}
+                {/* Timers List */}
+                <ul role="list" className="divide-y divide-white/5 mt-6 w-full max-w-lg">
+                {timers.length === 0 ? (
+                    <p className="text-gray-500 text-center">No timers added yet.</p>
+                ) : (
+                    timers.map((timer, index) => (
+                    <li
+                        key={timer.id}
+                        className="relative flex items-center space-x-4 py-4"
+                    >
+                        <div className="min-w-0 flex-auto">
+                        <div className="flex items-center gap-x-3">
+                            <div
+                            className={`flex-none rounded-full p-1 ${
+                                index === currentTimerIndex
+                                ? "bg-green-400/10 text-green-400"
+                                : timer.state === "completed"
+                                ? "bg-gray-400/10 text-gray-400"
+                                : "bg-gray-100/10 text-gray-500"
+                            }`}
+                            >
+                            <div className="size-2 rounded-full bg-current"></div>
+                            </div>
+                            <h2 className="min-w-0 text-sm/6 font-semibold text-white">
+                            {timer.type}
+                            </h2>
+                        </div>
+                        <div className="mt-3 flex items-center gap-x-2.5 text-xs/5 text-gray-400">
+                            <p>
+                            <strong>Work:</strong> {timer.workTime.minutes}m{" "}
+                            {timer.workTime.seconds}s
+                            </p>
+                            {timer.restTime && (
+                            <>
+                                <svg
+                                viewBox="0 0 2 2"
+                                className="size-0.5 flex-none fill-gray-300"
                                 >
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <p>
-                                                <strong>Type:</strong> {timer.type}
-                                            </p>
-                                            <p>
-                                                <strong>Work:</strong> {timer.workTime.minutes}m{" "}
-                                                {timer.workTime.seconds}s
-                                            </p>
-                                            {timer.restTime && (
-                                                <p>
-                                                    <strong>Rest:</strong>{" "}
-                                                    {timer.restTime.minutes}m {timer.restTime.seconds}s
-                                                </p>
-                                            )}
-                                            {timer.rounds && (
-                                                <p>
-                                                    <strong>Rounds:</strong> {timer.rounds}
-                                                </p>
-                                            )}
-                                            <p>
-                                                <strong>State:</strong> {timer.state}
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => removeTimer(timer.id)}
-                                            className="text-red-500 hover:underline"
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
+                                <circle cx="1" cy="1" r="1" />
+                                </svg>
+                                <p>
+                                <strong>Rest:</strong> {timer.restTime.minutes}m{" "}
+                                {timer.restTime.seconds}s
+                                </p>
+                            </>
+                            )}
+                            {timer.rounds && (
+                            <>
+                                <svg
+                                viewBox="0 0 2 2"
+                                className="size-0.5 flex-none fill-gray-300"
+                                >
+                                <circle cx="1" cy="1" r="1" />
+                                </svg>
+                                <p>
+                                <strong>Rounds:</strong> {timer.rounds}
+                                </p>
+                            </>
+                            )}
+                        </div>
+                        </div>
+                        <button
+                        onClick={() => removeTimer(timer.id)}
+                        className="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                        Remove
+                        </button>
+                    </li>
+                    ))
+                )}
+                </ul>
 
                 {/* Workout Controls */}
+                { timers.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
                     {/* Reset Workout */}
                     <div className="flex flex-col w-full space-y-4">
@@ -124,6 +143,7 @@ const WorkoutView = () => {
                         <Button type="fastforward" onClick={nextTimer} />
                     </div>
                 </div>
+                )}
             </div>
         </div>
     );

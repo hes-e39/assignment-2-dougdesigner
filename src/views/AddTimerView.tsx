@@ -25,7 +25,7 @@ const AddTimerView = () => {
       alert('Timer added successfully!');
       resetForm();
     } else {
-      alert('Please configure a valid timer before saving.');
+      alert('Configure a valid timer before saving.');
     }
   };
 
@@ -35,23 +35,75 @@ const AddTimerView = () => {
     setIsTimerValid(false);
   };
 
+  const initializeTimerConfig = (type: string) => {
+    switch (type) {
+      case 'Stopwatch':
+        return { workTime: { minutes: 0, seconds: 0 } };
+      case 'Countdown':
+        return { workTime: { minutes: 0, seconds: 0 } };
+      case 'Tabata':
+        return {
+          workTime: { minutes: 0, seconds: 0 },
+          restTime: { minutes: 0, seconds: 0 },
+          rounds: 1,
+        };
+      case 'XY':
+        return { workTime: { minutes: 0, seconds: 0 }, rounds: 1 };
+      default:
+        return null;
+    }
+  };
+
+  const handleTimerTypeChange = (type: string) => {
+    setTimerType(type);
+    setTimerConfig(initializeTimerConfig(type)); // Initialize default config
+    setIsTimerValid(false); // Reset validity when timer type changes
+  };
+
   const handleTimerChange = (config: any) => {
-    setTimerConfig(config.workTime); // Update the timer configuration
+    setTimerConfig((prevConfig: any) => ({
+      ...prevConfig,
+      ...config, // Update only the changed fields
+    }));
     setIsTimerValid(config.isValid); // Update validity
   };
 
   const renderTimerInputs = () => {
     switch (timerType) {
       case 'Stopwatch':
-        return <Stopwatch onChange={handleTimerChange} isWorkoutTimer={true} />;
+        return (
+          <Stopwatch
+            onChange={handleTimerChange}
+            isWorkoutTimer={true}
+          />
+        );
       case 'Countdown':
-        return <Countdown onChange={handleTimerChange} isWorkoutTimer={true} />;
+        return (
+          <Countdown
+            onChange={handleTimerChange}
+            isWorkoutTimer={true}
+          />
+        );
       case 'Tabata':
-        return <Tabata onChange={handleTimerChange} isWorkoutTimer={true} />;
+        return (
+          <Tabata
+            onChange={handleTimerChange}
+            isWorkoutTimer={true}
+          />
+        );
       case 'XY':
-        return <XY onChange={handleTimerChange} isWorkoutTimer={true} />;
+        return (
+          <XY
+            onChange={handleTimerChange}
+            isWorkoutTimer={true}
+          />
+        );
       default:
-        return <p className="text-slate-500 text-sm text-center">Configure a valid timer and save it to add it to your workout.</p>;
+        return (
+          <p className="text-slate-500 text-sm text-center">
+            Configure a valid timer and save it to add it to your workout.
+          </p>
+        );
     }
   };
 
@@ -89,22 +141,21 @@ const AddTimerView = () => {
       <div className="flex flex-col items-center">
         <div className="mx-auto w-full max-w-xs">
           <div>
-            <label htmlFor="timerType" className="block text-sm/6 font-medium text-gray-300">
-              Select a timer
+            <label
+              htmlFor="timerType"
+              className="block text-lg font-semibold text-white"
+            >
+              Timer
             </label>
             <select
               id="timerType"
               name="timerType"
-              className="mr-2 py-2 px-4 block w-full bg-gray-800 border-2 border-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-xl"
-              onChange={(e) => {
-                setTimerType(e.target.value);
-                setTimerConfig(null); // Reset configuration when type changes
-                setIsTimerValid(false); // Reset validity when timer changes
-              }}
+              className="mt-1 mr-2 py-2 px-4 block w-full bg-gray-800 border-2 border-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-xl"
+              onChange={(e) => handleTimerTypeChange(e.target.value)}
               value={timerType || ''}
             >
               <option value="" disabled>
-                Select timer
+                Select a timer
               </option>
               <option value="Stopwatch">Stopwatch</option>
               <option value="Countdown">Countdown</option>
@@ -114,7 +165,9 @@ const AddTimerView = () => {
           </div>
         </div>
 
-        <div className="mt-6 md:flex md:items-center md:justify-between py-8">{renderTimerInputs()}</div>
+        <div className="md:flex md:items-center md:justify-between py-8">
+          {renderTimerInputs()}
+        </div>
       </div>
     </div>
   );
