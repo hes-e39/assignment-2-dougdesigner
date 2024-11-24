@@ -42,17 +42,46 @@ const AddTimerView = () => {
   const initializeTimerConfig = (type: string) => {
     switch (type) {
       case 'Stopwatch':
-        return { workTime: { minutes: 0, seconds: 0 } };
+        return { 
+          type: 'stopwatch',
+          workTime: { minutes: 0, seconds: 0 }, 
+          rounds: 1,
+          currentRound: 1,
+          timerMode: 'work',
+          state: 'not running',
+          skipped: false,
+         };
       case 'Countdown':
-        return { workTime: { minutes: 0, seconds: 0 } };
+        return { 
+          type: 'countdown',
+          workTime: { minutes: 0, seconds: 0 }, 
+          rounds: 1,
+          currentRound: 1,
+          timerMode: 'work',
+          state: 'not running',
+          skipped: false,
+        };
       case 'Tabata':
         return {
+          type: 'tabata',
           workTime: { minutes: 0, seconds: 0 },
           restTime: { minutes: 0, seconds: 0 },
           rounds: 1,
+          currentRound: 1,
+          timerMode: 'work',
+          state: 'not running',
+          skipped: false,
         };
       case 'XY':
-        return { workTime: { minutes: 0, seconds: 0 }, rounds: 1 };
+        return { 
+          type: 'xy',
+          workTime: { minutes: 0, seconds: 0 },
+          rounds: 1,
+          currentRound: 1,
+          timerMode: 'work',
+          state: 'not running',
+          skipped: false,
+        };
       default:
         return null;
     }
