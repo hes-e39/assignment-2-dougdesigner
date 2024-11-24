@@ -94,11 +94,15 @@ const AddTimerView = () => {
   };
 
   const handleTimerChange = (config: any) => {
-    setTimerConfig((prevConfig: any) => ({
-      ...prevConfig,
-      ...config, // Update only the changed fields
-    }));
-    setIsTimerValid(config.isValid); // Update validity
+    // Avoid unnecessary updates
+    setTimerConfig((prevConfig: any) => {
+      const updatedConfig = { ...prevConfig, ...config };
+      if (JSON.stringify(updatedConfig) !== JSON.stringify(prevConfig)) {
+        setIsTimerValid(config.isValid); // Update validity only when needed
+        return updatedConfig;
+      }
+      return prevConfig;
+    });
   };
 
   const renderTimerInputs = () => {
