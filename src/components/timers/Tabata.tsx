@@ -163,8 +163,9 @@ const Tabata: React.FC<TabataProps> = ({ onChange, isWorkoutTimer = false }) => 
         )}
 
       {!isWorkoutTimer && (
-        <div className="flex justify-center">
+        <div className="mt-2 flex items-baseline gap-x-2 justify-center mb-8">
             <DisplayMode mode={timerMode} />
+            <p className="text-4xl font-semibold tracking-tight text-white ">Round </p>
             <DisplayRounds rounds={rounds} currentRound={currentRoundRef.current} />
         </div>
     )}

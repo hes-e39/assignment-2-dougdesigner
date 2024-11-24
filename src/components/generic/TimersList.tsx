@@ -2,22 +2,39 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { TimerConfig } from "../../context/WorkoutContext";
 import EmptyState from "../generic/EmptyState";
+import TimerBadge from "../generic/TimerBadge";
 
 interface TimersListProps {
   timers: TimerConfig[];
   currentTimerIndex?: number | null;
   onRemoveTimer?: (id: string) => void;
+  disableRemove?: boolean; // Option to disable the remove button
 }
 
 const TimersList: React.FC<TimersListProps> = ({
   timers,
   currentTimerIndex = null,
   onRemoveTimer,
+  disableRemove = false, // Default to false
 }) => {
   const navigate = useNavigate();
 
+  // Function to derive the status of a timer
+  const getTimerStatus = (
+    timer: TimerConfig,
+    index: number
+  ): "running" | "paused" | "completed" | "skipped" | "ready" => {
+    if (index === currentTimerIndex && timer.state === "running") return "running";
+    if (timer.state === "paused") return "paused";
+    if (timer.state === "completed") return "completed";
+    if (timer.state === "not running" && index < (currentTimerIndex ?? timers.length))
+      return "ready";
+    return "ready";
+  };
+
   return (
-    <div className="w-full max-w-lg mt-6">
+    <div className="w-full max-w-lg mt-6 bg-slate-900 px-4 py-6 sm:px-6 lg:px-8 rounded-lg">
+      <p className="font-bold text-white truncate text-2xl tracking-tight">Timers</p>
       {timers.length === 0 ? (
         <EmptyState
           title="No timers"
@@ -34,6 +51,7 @@ const TimersList: React.FC<TimersListProps> = ({
             >
               <div className="min-w-0 flex-auto">
                 <div className="flex items-center gap-x-3">
+                  {/* Timer Icon */}
                   <div
                     className={`flex-none rounded-full p-1 ${
                       index === currentTimerIndex
@@ -45,10 +63,14 @@ const TimersList: React.FC<TimersListProps> = ({
                   >
                     <div className="size-2 rounded-full bg-current"></div>
                   </div>
+
+                  {/* Timer Type */}
                   <h2 className="min-w-0 text-sm/6 font-semibold text-white">
                     {timer.type}
                   </h2>
                 </div>
+
+                {/* Timer Details */}
                 <div className="mt-3 flex items-center gap-x-2.5 text-xs/5 text-gray-400">
                   <p>
                     <strong>Work</strong> {timer.workTime.minutes}m{" "}
@@ -83,14 +105,22 @@ const TimersList: React.FC<TimersListProps> = ({
                   )}
                 </div>
               </div>
-              {onRemoveTimer && (
-                <button
-                  onClick={() => onRemoveTimer(timer.id)}
-                  className="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Remove
-                </button>
-              )}
+
+              {/* Timer Badge and Remove Button */}
+              <div className="flex items-center space-x-2">
+                {/* Timer Status Badge */}
+                <TimerBadge status={getTimerStatus(timer, index)} />
+
+                {/* Remove Button */}
+                {!disableRemove && onRemoveTimer && (
+                  <button
+                    onClick={() => onRemoveTimer(timer.id)}
+                    className="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
             </li>
           ))}
         </ul>

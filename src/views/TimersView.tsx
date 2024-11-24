@@ -27,7 +27,7 @@ const TimersView = () => {
           </button> */}
         </div>
       </div>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center space-y-4">
         <Stopwatch />
         <Countdown />
         <XY />

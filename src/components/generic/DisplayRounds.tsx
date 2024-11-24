@@ -5,8 +5,13 @@ interface DisplayRoundsProps {
 
 const DisplayRounds: React.FC<DisplayRoundsProps> = ({ rounds, currentRound }) => {
     return (
-        <div className="text-gray-400 mb-5 font-mono text-xl p-4 text-center">
-            Round {currentRound}/{rounds}
+        <div className="flex items-baseline gap-x-2">
+            <div className="text-4xl font-semibold tracking-tight text-white">
+                {currentRound} 
+            </div>
+            <div className="text-sm text-gray-400">
+                / {rounds}
+            </div>
         </div>
     );
 }

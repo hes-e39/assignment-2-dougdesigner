@@ -112,7 +112,7 @@ const Countdown: React.FC<CountdownProps> = ({ onChange, isWorkoutTimer = false 
     <Panel title="Countdown" description="A timer that counts down from X amount of time (e.g. count down to 0, starting at 2 minutes and 30)">
       {/* Timer Display */}
       {!isWorkoutTimer && (
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center mb-8">
         <DisplayTime 
           minutes={getDisplayMinutes(totalMilliseconds, isRunning, inputMinutes)}
           seconds={getDisplaySeconds(totalMilliseconds, isRunning, inputSeconds)}

@@ -104,7 +104,7 @@ const AddTimerView = () => {
         );
       default:
         return (
-          <p className="text-slate-500 text-sm text-center">
+          <p className="text-slate-500 text-sm text-center mx-auto">
             Configure a valid timer and save it to add it to your workout.
           </p>
         );
@@ -145,19 +145,19 @@ const AddTimerView = () => {
       </div>
 
       {/* Timer configuration */}
-      <div className="flex flex-col items-center">
+      <div className="max-w-2xl mt-6 bg-slate-900 px-4 py-6 sm:px-6 lg:px-8 rounded-lg items-center justify-center mx-auto">
         <div className="mx-auto w-full max-w-xs">
           <div>
             <label
               htmlFor="timerType"
               className="block text-lg font-semibold text-white"
             >
-              Timer
+              Timer type
             </label>
             <select
               id="timerType"
               name="timerType"
-              className="mt-1 mr-2 py-2 px-4 block w-full bg-gray-800 border-2 border-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-xl"
+              className="mt-2 r-2 py-2 px-4 block w-full bg-gray-800 border-2 border-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-lg"
               onChange={(e) => handleTimerTypeChange(e.target.value)}
               value={timerType || ''}
             >

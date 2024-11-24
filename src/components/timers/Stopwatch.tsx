@@ -105,7 +105,7 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, isWorkoutTimer = false 
     <Panel title="Stopwatch" description="A timer that counts up to X amount of time (e.g. count up to 2 minutes and 30 seconds, starting at 0)">
       {/* Timer Display */}
       {!isWorkoutTimer && (
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center mb-8">
         <DisplayTime
           minutes={getMinutes(totalMilliseconds)}
           seconds={getSeconds(totalMilliseconds)}

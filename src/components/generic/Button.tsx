@@ -12,11 +12,11 @@ const Button: React.FC<ButtonProps> = ({ type, onClick, disabled = false }) => {
         },
         pause: {
             label: 'Pause ⏸',
-            style: 'bg-yellow-500 hover:bg-yellow-600 text-yellow-50 hover:text-yellow-100',
+            style: 'bg-yellow-600 hover:bg-yellow-700 text-yellow-50 hover:text-yellow-100',
         },
         resume: {
             label: 'Resume ▶',
-            style: 'bg-yellow-500 hover:bg-yellow-600 text-yellow-50 hover:text-yellow-100',
+            style: 'bg-green-700 hover:bg-green-800 text-green-100 hover:text-green-200',
         },
         reset: {
             label: 'Reset ↺',

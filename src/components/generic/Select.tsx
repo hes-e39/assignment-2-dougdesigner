@@ -18,7 +18,7 @@ const Select: React.FC<SelectProps> = ({ id, label, value, options, onChange, di
                 value={value}
                 disabled={disabled}
                 onChange={e => onChange(Number.parseInt(e.target.value))}
-                className={`mr-2 py-2 px-4 block w-full bg-gray-800 border-2 border-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-xl ${
+                className={`mr-2 py-2 px-4 block w-full bg-gray-800 border-2 border-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-lg ${
                     disabled ? 'cursor-not-allowed opacity-50' : ''
                 }`}
             >

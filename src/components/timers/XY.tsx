@@ -143,20 +143,25 @@ const XY: React.FC<XYProps> = ({ onChange, isWorkoutTimer = false }) => {
       title="XY"
       description="A timer that counts down from X time per round, for Y number of rounds (e.g. 1 minute for 10 rounds would count down from 1 minute to 0, then start another countdown, etc, 10 times)."
     >
-      {/* Timer Display */}
-      {!isWorkoutTimer && (
-        <div className="w-full flex justify-center">
-            <DisplayTime 
-            minutes={getMinutes(totalMilliseconds)} 
-            seconds={getSeconds(totalMilliseconds)} 
-            hundredths={getHundredths(totalMilliseconds)} 
-            />
-        </div>
-        )}
+      <div className="mb-8">
+        {/* Timer Display */}
+        {!isWorkoutTimer && (
+          <div className="w-full flex justify-center">
+              <DisplayTime 
+                minutes={getMinutes(totalMilliseconds)} 
+                seconds={getSeconds(totalMilliseconds)} 
+                hundredths={getHundredths(totalMilliseconds)} 
+              />
+          </div>
+          )}
 
-      {!isWorkoutTimer && (
-        <DisplayRounds rounds={rounds} currentRound={currentRoundRef.current} />
-        )}
+        {!isWorkoutTimer && (
+          <div className="mt-2 flex items-baseline gap-x-2 justify-center">
+            <p className="text-4xl font-semibold tracking-tight text-white ">Round</p>
+            <DisplayRounds rounds={rounds} currentRound={currentRoundRef.current} />
+          </div>
+          )}
+      </div>
 
       <hr className="border-slate-700" />
 
