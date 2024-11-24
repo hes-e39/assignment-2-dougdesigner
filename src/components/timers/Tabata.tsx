@@ -15,10 +15,10 @@ interface TabataProps {
     rounds: number;
     isValid: boolean;
   }) => void;
-  isWorkoutTimer?: boolean; // Determines if this is used in a workout
+  newTimer?: boolean; // Determines if this is a new timer being configured
 }
 
-const Tabata: React.FC<TabataProps> = ({ onChange, isWorkoutTimer = false }) => {
+const Tabata: React.FC<TabataProps> = ({ onChange, newTimer = false }) => {
   const [inputWorkMinutes, setInputWorkMinutes] = useState(0);
   const [inputWorkSeconds, setInputWorkSeconds] = useState(0);
   const [inputRestMinutes, setInputRestMinutes] = useState(0);
@@ -121,7 +121,7 @@ const Tabata: React.FC<TabataProps> = ({ onChange, isWorkoutTimer = false }) => 
 
   // Notify parent of changes
   useEffect(() => {
-    if (isWorkoutTimer && onChange) {
+    if (newTimer && onChange) {
       onChange({
         workTime: { minutes: inputWorkMinutes, seconds: inputWorkSeconds },
         restTime: { minutes: inputRestMinutes, seconds: inputRestSeconds },
@@ -135,7 +135,7 @@ const Tabata: React.FC<TabataProps> = ({ onChange, isWorkoutTimer = false }) => 
     inputRestMinutes,
     inputRestSeconds,
     rounds,
-    isWorkoutTimer,
+    newTimer,
     onChange,
   ]);
 
@@ -152,7 +152,7 @@ const Tabata: React.FC<TabataProps> = ({ onChange, isWorkoutTimer = false }) => 
       description="An interval timer with work/rest periods. Example: 20s/10s, 8 rounds, would count down from 20 seconds to 0, then count down from 10 seconds to 0, then from 20, then from 10, etc, for 8 rounds. A full round includes both the work and rest. In this case, 20+10=30 seconds per round."
     >
       {/* Timer Display */}
-      {!isWorkoutTimer && (
+      {!newTimer && (
       <div className="w-full flex justify-center">
         <DisplayTime 
           minutes={getMinutes(totalMilliseconds)} 
@@ -162,7 +162,7 @@ const Tabata: React.FC<TabataProps> = ({ onChange, isWorkoutTimer = false }) => 
       </div>
         )}
 
-      {!isWorkoutTimer && (
+      {!newTimer && (
         <div className="mt-2 flex items-baseline gap-x-2 justify-center mb-8">
             <DisplayMode mode={timerMode} />
             <p className="text-lg font-semibold tracking-tight text-white ">Round </p>
@@ -190,7 +190,7 @@ const Tabata: React.FC<TabataProps> = ({ onChange, isWorkoutTimer = false }) => 
       </div>
 
       {/* Timer Buttons */}
-      {!isWorkoutTimer && (
+      {!newTimer && (
         <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
           {!isCompleted && (
             <>

@@ -111,28 +111,28 @@ const AddTimerView = () => {
         return (
           <Stopwatch
             onChange={handleTimerChange}
-            isWorkoutTimer={true}
+            newTimer={true}
           />
         );
       case 'Countdown':
         return (
           <Countdown
             onChange={handleTimerChange}
-            isWorkoutTimer={true}
+            newTimer={true}
           />
         );
       case 'Tabata':
         return (
           <Tabata
             onChange={handleTimerChange}
-            isWorkoutTimer={true}
+            newTimer={true}
           />
         );
       case 'XY':
         return (
           <XY
             onChange={handleTimerChange}
-            isWorkoutTimer={true}
+            newTimer={true}
           />
         );
       default:

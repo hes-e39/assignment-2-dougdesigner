@@ -8,19 +8,34 @@ import { getDisplayMinutes, getDisplaySeconds, getDisplayHundredths } from '../.
 
 interface CountdownProps {
   onChange?: (config: { workTime: { minutes: number; seconds: number }; isValid: boolean }) => void;
-  isWorkoutTimer?: boolean; // Determines if this is used in a workout
+  newTimer?: boolean; // Determines if this is a new timer being configured
+  workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout
+  workTime?: { minutes: number; seconds: number }; // Work time configuration
+  elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
 }
 
-const Countdown: React.FC<CountdownProps> = ({ onChange, isWorkoutTimer = false }) => {
-  const [inputMinutes, setInputMinutes] = useState(0);
-  const [inputSeconds, setInputSeconds] = useState(0);
-  const [totalMilliseconds, setTotalMilliseconds] = useState(0);
+const Countdown: React.FC<CountdownProps> = ({ 
+  workTime = { minutes: 0, seconds: 0 },
+  elapsedTime = 0,
+  onChange, 
+  newTimer = false,
+  workoutTimer = false, 
+}) => {
+  const [inputMinutes, setInputMinutes] = useState(workTime.minutes);
+  const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
+  const [totalMilliseconds, setTotalMilliseconds] = useState(
+    workoutTimer
+      ? workTime.minutes * 60000 + workTime.seconds * 1000 - elapsedTime
+      : 0
+  );
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const intervalRef = useRef<number | null>(null);
 
-  const targetMilliseconds = inputMinutes * 60000 + inputSeconds * 1000;
+  const targetMilliseconds = workoutTimer
+  ? workTime.minutes * 60000 + workTime.seconds * 1000
+  : inputMinutes * 60000 + inputSeconds * 1000;
 
   // Reset timer function
   const resetTimer = () => {
@@ -88,18 +103,18 @@ const Countdown: React.FC<CountdownProps> = ({ onChange, isWorkoutTimer = false 
 
   // Check if input is valid
   const inputValid = () => {
-    return inputMinutes > 0 || inputSeconds > 0;
+    return targetMilliseconds > 0;
   };
 
   // Notify parent of changes
   useEffect(() => {
-    if (isWorkoutTimer && onChange) {
+    if (newTimer && onChange) {
       onChange({
         workTime: { minutes: inputMinutes, seconds: inputSeconds },
         isValid: inputValid(),
       });
     }
-  }, [inputMinutes, inputSeconds, isWorkoutTimer, onChange]);
+  }, [inputMinutes, inputSeconds, newTimer, onChange]);
 
   // Clear interval on unmount
   useEffect(() => {
@@ -111,7 +126,7 @@ const Countdown: React.FC<CountdownProps> = ({ onChange, isWorkoutTimer = false 
   return (
     <Panel title="Countdown" description="A timer that counts down from X amount of time (e.g. count down to 0, starting at 2 minutes and 30)">
       {/* Timer Display */}
-      {!isWorkoutTimer && (
+      {!newTimer && (
       <div className="w-full flex justify-center mb-8">
         <DisplayTime 
           minutes={getDisplayMinutes(totalMilliseconds, isRunning, inputMinutes)}
@@ -130,12 +145,12 @@ const Countdown: React.FC<CountdownProps> = ({ onChange, isWorkoutTimer = false 
           seconds={inputSeconds}
           onMinutesChange={handleMinutesChange}
           onSecondsChange={handleSecondsChange}
-          disabled={isRunning || isPaused || isCompleted}
+          disabled={isRunning || isPaused || isCompleted || workoutTimer}
         />
       </div>
 
       {/* Timer Buttons */}
-      {!isWorkoutTimer && (
+      {!newTimer || !workoutTimer && (
         <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
           {!isCompleted && (
             <>

@@ -4,7 +4,11 @@ import { useWorkout } from "../context/WorkoutContext";
 import Button from "../components/generic/Button";
 import TimersList from "../components/generic/TimersList";
 import WorkoutStats from "../components/generic/WorkoutStats";
-import WorkoutTimers from "../components/generic/WorkoutTimers";
+// import WorkoutTimers from "../components/generic/WorkoutTimers";
+import Countdown from "../components/timers/Countdown";
+import Stopwatch from "../components/timers/Stopwatch";
+import Tabata from "../components/timers/Tabata";
+import XY from "../components/timers/XY";
 
 const WorkoutView = () => {
   const {
@@ -16,7 +20,7 @@ const WorkoutView = () => {
     resetWorkout,
     pauseTimer,
     isWorkoutEditable,
-    // elapsedTime,
+    elapsedTime,
     totalElapsedTime,
   } = useWorkout();
 
@@ -139,11 +143,72 @@ const WorkoutView = () => {
           </div>
 
 
-          <WorkoutTimers
-            timers={timers}
-            currentTimerIndex={currentTimerIndex}
-            elapsedTime={totalElapsedTime}
-            />
+            {/* To do, get to work in this view before making it's own component */}
+            {/* <WorkoutTimers
+                timers={timers}
+                currentTimerIndex={currentTimerIndex}
+                elapsedTime={totalElapsedTime}
+            /> */}
+
+            <div className="workout-timers space-y-4">
+                {timers.map((timer, index) => {
+                    // Determine if this is the active timer
+                    const isActive = currentTimerIndex === index;
+
+                    switch (timer.type) {
+                    case "stopwatch":
+                        return (
+                        <div key={timer.id} className="timer-container">
+                            <Stopwatch 
+                                // elapsedTime={isActive ? elapsedTime : 0} 
+                            />
+                        </div>
+                        );
+
+                    case "countdown":
+                        return (
+                        <div key={timer.id} className="timer-container">
+                            <Countdown
+                                workoutTimer={true}
+                                workTime={timer.workTime}
+                                elapsedTime={isActive ? elapsedTime : 0}
+                            />
+                        </div>
+                        );
+
+                    case "tabata":
+                        return (
+                        <div key={timer.id} className="timer-container">
+                            <Tabata
+                            // workTime={timer.workTime}
+                            // restTime={timer.restTime || { minutes: 0, seconds: 0 }}
+                            // rounds={timer.rounds || 1}
+                            // currentRound={timer.currentRound || 1}
+                            // timerMode={timer.timerMode || "work"}
+                            // elapsedTime={isActive ? elapsedTime : 0}
+                            />
+                        </div>
+                        );
+
+                    case "xy":
+                        return (
+                        <div key={timer.id} className="timer-container">
+                            <XY
+                            // workTime={timer.workTime}
+                            // restTime={timer.restTime || { minutes: 0, seconds: 0 }}
+                            // rounds={timer.rounds || 1}
+                            // currentRound={timer.currentRound || 1}
+                            // timerMode={timer.timerMode || "work"}
+                            // elapsedTime={isActive ? elapsedTime : 0}
+                            />
+                        </div>
+                        );
+
+                    default:
+                        return null;
+                    }
+                })}
+                </div>
         </div>
 
 

@@ -8,10 +8,10 @@ import { getMinutes, getSeconds, getHundredths } from '../../utils/helpers';
 
 interface StopwatchProps {
   onChange?: (config: { workTime: { minutes: number; seconds: number }, isValid: boolean }) => void;
-  isWorkoutTimer?: boolean; // Determines if this is used in a workout
+  newTimer?: boolean; // Determines if this is a new timer being configured
 }
 
-const Stopwatch: React.FC<StopwatchProps> = ({ onChange, isWorkoutTimer = false }) => {
+const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false }) => {
   const [inputMinutes, setInputMinutes] = useState(0);
   const [inputSeconds, setInputSeconds] = useState(0);
   const [totalMilliseconds, setTotalMilliseconds] = useState(0);
@@ -87,13 +87,13 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, isWorkoutTimer = false 
 
   // Notify parent of changes
   useEffect(() => {
-    if (isWorkoutTimer && onChange) {
+    if (newTimer && onChange) {
       onChange({
         workTime: { minutes: inputMinutes, seconds: inputSeconds },
         isValid: inputValid(), // Call inputValid() to determine if the input is valid
       });
     }
-  }, [inputMinutes, inputSeconds, onChange, isWorkoutTimer]);
+  }, [inputMinutes, inputSeconds, onChange, newTimer]);
 
   useEffect(() => {
     return () => {
@@ -104,7 +104,7 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, isWorkoutTimer = false 
   return (
     <Panel title="Stopwatch" description="A timer that counts up to X amount of time (e.g. count up to 2 minutes and 30 seconds, starting at 0)">
       {/* Timer Display */}
-      {!isWorkoutTimer && (
+      {!newTimer && (
       <div className="w-full flex justify-center mb-8">
         <DisplayTime
           minutes={getMinutes(totalMilliseconds)}
@@ -128,7 +128,7 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, isWorkoutTimer = false 
       </div>
 
       {/* Timer Buttons */}
-      {!isWorkoutTimer && (
+      {!newTimer && (
         <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
           {!isCompleted && (
             <>

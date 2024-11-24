@@ -104,8 +104,8 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
     const totalDuration = (workTime + restTime) * 1000; // Convert to milliseconds
 
     if (elapsedTime >= totalDuration) {
-      setElapsedTime(0); // Reset elapsed time for the next timer
       nextTimer(); // Move to the next timer
+      setElapsedTime(0); // Reset elapsed time for the next timer
     }
   }, [elapsedTime, currentTimerIndex, timers]);
 

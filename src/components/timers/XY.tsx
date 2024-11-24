@@ -13,10 +13,10 @@ interface XYProps {
     rounds: number; 
     isValid: boolean 
   }) => void;
-  isWorkoutTimer?: boolean; // Determines if this is used in a workout
+  newTimer?: boolean; // Determines if this is a new timer being configured
 }
 
-const XY: React.FC<XYProps> = ({ onChange, isWorkoutTimer = false }) => {
+const XY: React.FC<XYProps> = ({ onChange, newTimer = false }) => {
   const [inputMinutes, setInputMinutes] = useState(0);
   const [inputSeconds, setInputSeconds] = useState(0);
   const [rounds, setRounds] = useState(1);
@@ -122,14 +122,14 @@ const XY: React.FC<XYProps> = ({ onChange, isWorkoutTimer = false }) => {
 
   // Notify parent of changes
   useEffect(() => {
-    if (isWorkoutTimer && onChange) {
+    if (newTimer && onChange) {
       onChange({
         workTime: { minutes: inputMinutes, seconds: inputSeconds },
         rounds,
         isValid: inputValid(),
       });
     }
-  }, [inputMinutes, inputSeconds, rounds, isWorkoutTimer, onChange]);
+  }, [inputMinutes, inputSeconds, rounds, newTimer, onChange]);
 
   // Clear interval on unmount
   useEffect(() => {
@@ -145,7 +145,7 @@ const XY: React.FC<XYProps> = ({ onChange, isWorkoutTimer = false }) => {
     >
       <div className="mb-8">
         {/* Timer Display */}
-        {!isWorkoutTimer && (
+        {!newTimer && (
           <div className="w-full flex justify-center">
               <DisplayTime 
                 minutes={getMinutes(totalMilliseconds)} 
@@ -155,7 +155,7 @@ const XY: React.FC<XYProps> = ({ onChange, isWorkoutTimer = false }) => {
           </div>
           )}
 
-        {!isWorkoutTimer && (
+        {!newTimer && (
           <div className="mt-2 flex items-baseline gap-x-2 justify-center">
             <p className="text-lg font-semibold tracking-tight text-white ">Round</p>
             <DisplayRounds rounds={rounds} currentRound={currentRoundRef.current} />
@@ -179,7 +179,7 @@ const XY: React.FC<XYProps> = ({ onChange, isWorkoutTimer = false }) => {
       </div>
 
       {/* Timer Buttons */}
-      {!isWorkoutTimer && (
+      {!newTimer && (
         <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
           {!isCompleted && (
             <>
