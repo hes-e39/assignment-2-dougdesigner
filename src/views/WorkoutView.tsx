@@ -175,12 +175,13 @@ const WorkoutView = () => {
                         return (
                         <div key={timer.id} className="timer-container">
                             <Tabata
-                            // workTime={timer.workTime}
-                            // restTime={timer.restTime || { minutes: 0, seconds: 0 }}
-                            // rounds={timer.rounds || 1}
-                            // currentRound={timer.currentRound || 1}
-                            // timerMode={timer.timerMode || "work"}
-                            // elapsedTime={isActive ? elapsedTime : 0}
+                            workoutTimer
+                            workTime={timer.workTime}
+                            restTime={timer.restTime}
+                            totalRounds={timer.totalRounds}
+                            state={timer.state}
+                            active={isActive}
+                            elapsedTime={isActive ? elapsedTime : 0}
                             />
                         </div>
                         );
@@ -191,10 +192,10 @@ const WorkoutView = () => {
                             <XY
                             workoutTimer
                             workTime={timer.workTime}
+                            totalRounds={timer.totalRounds}
                             state={timer.state}
                             active={isActive}
                             elapsedTime={isActive ? elapsedTime : 0}
-                            totalRounds={timer.totalRounds}
                             />
                         </div>
                         );

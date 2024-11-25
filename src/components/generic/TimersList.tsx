@@ -11,6 +11,14 @@ interface TimersListProps {
   disableRemove?: boolean; // Option to disable the remove button
 }
 
+// Add a dictionary to map the timer type to a human-readable string
+const timerTypeMap: Record<string, string> = {
+  stopwatch: "Stopwatch",
+  countdown: "Countdown",
+  tabata: "Tabata",
+  xy: "XY",
+};
+
 const TimersList: React.FC<TimersListProps> = ({
   timers,
   currentTimerIndex = null,
@@ -68,7 +76,7 @@ const TimersList: React.FC<TimersListProps> = ({
 
                   {/* Timer Type */}
                   <h2 className="min-w-0 text-sm/6 font-semibold text-white">
-                    {timer.type}
+                    {timerTypeMap[timer.type]}
                   </h2>
                 </div>
 

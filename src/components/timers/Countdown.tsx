@@ -32,7 +32,7 @@ const Countdown: React.FC<CountdownProps> = ({
   const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
   const [totalMilliseconds, setTotalMilliseconds] = useState(
     workoutTimer
-      ? workTime.minutes * 60000 + workTime.seconds * 1000 - elapsedTime
+      ? workTime.minutes * 60000 + workTime.seconds * 1000
       : 0
   );
   const [isRunning, setIsRunning] = useState(false);

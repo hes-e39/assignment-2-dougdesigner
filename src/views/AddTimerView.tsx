@@ -61,21 +61,21 @@ const AddTimerView = () => {
           state: 'not running',
           skipped: false,
         };
-      case 'Tabata':
-        return {
-          type: 'tabata',
+      case 'XY':
+        return { 
+          type: 'xy',
           workTime: { minutes: 0, seconds: 0 },
-          restTime: { minutes: 0, seconds: 0 },
           rounds: 1,
           currentRound: 1,
           timerMode: 'work',
           state: 'not running',
           skipped: false,
         };
-      case 'XY':
-        return { 
-          type: 'xy',
+      case 'Tabata':
+        return {
+          type: 'tabata',
           workTime: { minutes: 0, seconds: 0 },
+          restTime: { minutes: 0, seconds: 0 },
           rounds: 1,
           currentRound: 1,
           timerMode: 'work',
@@ -121,13 +121,6 @@ const AddTimerView = () => {
             newTimer={true}
           />
         );
-      case 'Tabata':
-        return (
-          <Tabata
-            onChange={handleTimerChange}
-            newTimer={true}
-          />
-        );
       case 'XY':
         return (
           <XY
@@ -135,6 +128,14 @@ const AddTimerView = () => {
             newTimer={true}
           />
         );
+      case 'Tabata':
+        return (
+          <Tabata
+            onChange={handleTimerChange}
+            newTimer={true}
+          />
+        );
+      
       default:
         return (
           <p className="text-slate-500 text-sm text-center mx-auto">
@@ -199,8 +200,8 @@ const AddTimerView = () => {
               </option>
               <option value="Stopwatch">Stopwatch</option>
               <option value="Countdown">Countdown</option>
-              <option value="Tabata">Tabata</option>
               <option value="XY">XY</option>
+              <option value="Tabata">Tabata</option>
             </select>
           </div>
         </div>

@@ -12,19 +12,40 @@ interface TabataProps {
   onChange?: (config: { 
     workTime: { minutes: number; seconds: number };
     restTime: { minutes: number; seconds: number };
-    rounds: number;
+    totalRounds: number;
     isValid: boolean;
   }) => void;
   newTimer?: boolean; // Determines if this is a new timer being configured
+  workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout
+  workTime?: { minutes: number; seconds: number }; // Work time configuration
+  restTime?: { minutes: number; seconds: number }; // Rest time configuration
+  totalRounds?: number; // Number of rounds
+  elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
+  active?: boolean; // Determines if the currently active timer in a workout
+  state?: "not running" | "running" | "paused" | "completed";
 }
 
-const Tabata: React.FC<TabataProps> = ({ onChange, newTimer = false }) => {
-  const [inputWorkMinutes, setInputWorkMinutes] = useState(0);
-  const [inputWorkSeconds, setInputWorkSeconds] = useState(0);
-  const [inputRestMinutes, setInputRestMinutes] = useState(0);
-  const [inputRestSeconds, setInputRestSeconds] = useState(0);
-  const [rounds, setRounds] = useState(1);
-  const [totalMilliseconds, setTotalMilliseconds] = useState(0);
+const Tabata: React.FC<TabataProps> = ({ 
+  onChange, 
+  newTimer = false,
+  workoutTimer = false,
+  workTime = { minutes: 0, seconds: 0 },
+  restTime = { minutes: 0, seconds: 0 },
+  elapsedTime = 0,
+  totalRounds = 1,
+  active = false,
+  state = "not running"
+}) => {
+  const [inputWorkMinutes, setInputWorkMinutes] = useState(workTime.minutes);
+  const [inputWorkSeconds, setInputWorkSeconds] = useState(workTime.seconds);
+  const [inputRestMinutes, setInputRestMinutes] = useState(restTime.minutes);
+  const [inputRestSeconds, setInputRestSeconds] = useState(restTime.seconds);
+  const [rounds, setRounds] = useState(totalRounds);
+  const [totalMilliseconds, setTotalMilliseconds] = useState(
+    workoutTimer
+      ? workTime.minutes * 60000 + workTime.seconds * 1000
+      : 0
+  );
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -32,20 +53,15 @@ const Tabata: React.FC<TabataProps> = ({ onChange, newTimer = false }) => {
   const intervalRef = useRef<number | null>(null);
   const [timerMode, setTimerMode] = useState<'work' | 'rest'>('work');
 
-  const workMilliseconds = inputWorkMinutes * 60000 + inputWorkSeconds * 1000;
-  const restMilliseconds = inputRestMinutes * 60000 + inputRestSeconds * 1000;
-  const targetMilliseconds = timerMode === 'work' ? workMilliseconds : restMilliseconds;
+  const workMilliseconds = workoutTimer
+    ? workTime.minutes * 60000 + workTime.seconds * 1000
+    : inputWorkMinutes * 60000 + inputWorkSeconds * 1000;
 
-  // Reset timer function
-  const resetTimer = () => {
-    setIsRunning(false);
-    setIsPaused(false);
-    setIsCompleted(false);
-    currentRoundRef.current = 1;
-    setTimerMode('work');
-    setTotalMilliseconds(targetMilliseconds);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
+  const restMilliseconds = workoutTimer
+    ? restTime.minutes * 60000 + restTime.seconds * 1000
+    : inputRestMinutes * 60000 + inputRestSeconds * 1000;
+
+  const targetMilliseconds = timerMode === 'work' ? workMilliseconds : restMilliseconds;
 
   // Countdown function
   const tick = () => {
@@ -58,25 +74,6 @@ const Tabata: React.FC<TabataProps> = ({ onChange, newTimer = false }) => {
     });
   };
 
-  // Watch for when the timer reaches zero and handle round changes
-  useEffect(() => {
-    if (isRunning && totalMilliseconds === 0) {
-      if (timerMode === 'work') {
-        setTimerMode('rest');
-        setTotalMilliseconds(restMilliseconds);
-      } else {
-        if (currentRoundRef.current < rounds) {
-          currentRoundRef.current += 1;
-          setTimerMode('work');
-          setTotalMilliseconds(workMilliseconds); // Reset timer for the next round
-        } else {
-          // If all rounds are complete, stop the timer
-          fastForwardTimer();
-        }
-      }
-    }
-  }, [totalMilliseconds, isRunning, rounds, workMilliseconds, restMilliseconds, timerMode]);
-
   // Start timer function
   const startTimer = () => {
     currentRoundRef.current = 1;
@@ -86,6 +83,17 @@ const Tabata: React.FC<TabataProps> = ({ onChange, newTimer = false }) => {
     setIsPaused(false);
     setIsCompleted(false);
     intervalRef.current = window.setInterval(tick, 10);
+  };
+
+  // Reset timer function
+  const resetTimer = () => {
+    setIsRunning(false);
+    setIsPaused(false);
+    setIsCompleted(false);
+    currentRoundRef.current = 1;
+    setTimerMode('work');
+    setTotalMilliseconds(targetMilliseconds);
+    if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
   // Pause timer function
@@ -113,11 +121,38 @@ const Tabata: React.FC<TabataProps> = ({ onChange, newTimer = false }) => {
   // Check if input is valid
   const inputValid = () => {
     return (
-      (inputWorkMinutes > 0 || inputWorkSeconds > 0) &&
-      (inputRestMinutes > 0 || inputRestSeconds > 0) &&
+      workMilliseconds > 0 &&
+      restMilliseconds > 0 &&
       rounds > 0
     );
   };
+
+  // Recalculate `totalMilliseconds` when inputs change
+  useEffect(() => {
+    if (!workoutTimer) {
+      setTotalMilliseconds(targetMilliseconds);
+    }
+  }, [inputWorkMinutes, inputWorkSeconds]);
+
+    // Watch for when the timer reaches zero and handle round changes
+    useEffect(() => {
+      if (isRunning && totalMilliseconds === 0) {
+        if (timerMode === 'work') {
+          setTimerMode('rest');
+          setTotalMilliseconds(restMilliseconds);
+        } else {
+          if (currentRoundRef.current < rounds) {
+            currentRoundRef.current += 1;
+            setTimerMode('work');
+            setTotalMilliseconds(workMilliseconds); // Reset timer for the next round
+          } else {
+            // If all rounds are complete, stop the timer
+            fastForwardTimer();
+          }
+        }
+      }
+    }, [totalMilliseconds, isRunning, rounds, workMilliseconds, restMilliseconds, timerMode]);
+  
 
   // Notify parent of changes
   useEffect(() => {
@@ -125,7 +160,7 @@ const Tabata: React.FC<TabataProps> = ({ onChange, newTimer = false }) => {
       onChange({
         workTime: { minutes: inputWorkMinutes, seconds: inputWorkSeconds },
         restTime: { minutes: inputRestMinutes, seconds: inputRestSeconds },
-        rounds,
+        totalRounds: rounds,
         isValid: inputValid(),
       });
     }
@@ -138,6 +173,49 @@ const Tabata: React.FC<TabataProps> = ({ onChange, newTimer = false }) => {
     newTimer,
     onChange,
   ]);
+
+  // Synchronize `totalMilliseconds` with `elapsedTime` in workout mode
+  useEffect(() => {
+    if (workoutTimer && active) {
+      const roundTime = workMilliseconds + restMilliseconds;
+      const elapsedInRound = elapsedTime % roundTime;
+      const elapsedRounds = Math.floor(elapsedTime / roundTime);
+
+      currentRoundRef.current = Math.min(elapsedRounds + 1, rounds);
+
+      if (elapsedInRound < workMilliseconds) {
+        setTimerMode("work");
+        setTotalMilliseconds(Math.max(workMilliseconds - elapsedInRound, 0));
+      } else {
+        setTimerMode("rest");
+        setTotalMilliseconds(Math.max(roundTime - elapsedInRound, 0));
+      }
+    }
+  }, [elapsedTime, workMilliseconds, restMilliseconds, rounds, workoutTimer, active]);
+
+  // Handle timer state changes
+  useEffect(() => {
+    if (workoutTimer) {
+      if (state === "not running") {
+        resetTimer(); // Reset the timer for all states
+      } else if (state === "completed") {
+        fastForwardTimer(); // Mark as completed
+      } else if (active) {
+        switch (state) {
+          case "running":
+            if (isPaused) {
+              resumeTimer();
+            } else {
+              startTimer();
+            }
+            break;
+          case "paused":
+            pauseTimer();
+            break;
+        }
+      }
+    }
+  }, [state, active, workoutTimer]);
 
   // Clear interval on unmount
   useEffect(() => {
@@ -185,12 +263,12 @@ const Tabata: React.FC<TabataProps> = ({ onChange, newTimer = false }) => {
           onRestMinutesChange={setInputRestMinutes}
           onRestSecondsChange={setInputRestSeconds}
           onRoundsChange={setRounds}
-          disabled={isRunning || isPaused || isCompleted}
+          disabled={isRunning || isPaused || isCompleted || workoutTimer}
         />
       </div>
 
       {/* Timer Buttons */}
-      {!newTimer && (
+      {!newTimer && !workoutTimer && (
         <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
           {!isCompleted && (
             <>

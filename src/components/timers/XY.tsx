@@ -39,7 +39,7 @@ const XY: React.FC<XYProps> = ({
   const [rounds, setRounds] = useState(totalRounds);
   const [totalMilliseconds, setTotalMilliseconds] = useState(
     workoutTimer
-      ? workTime.minutes * 60000 + workTime.seconds * 1000 - elapsedTime
+      ? workTime.minutes * 60000 + workTime.seconds * 1000
       : 0
   );
   const [isRunning, setIsRunning] = useState(false);
@@ -127,17 +127,6 @@ const XY: React.FC<XYProps> = ({
     return targetMilliseconds > 0;
   };
 
-  // Notify parent of changes
-  useEffect(() => {
-    if (newTimer && onChange) {
-      onChange({
-        workTime: { minutes: inputMinutes, seconds: inputSeconds },
-        totalRounds: rounds,
-        isValid: inputValid(),
-      });
-    }
-  }, [inputMinutes, inputSeconds, rounds, newTimer, onChange]);
-
   // Watch for when the timer reaches zero and handle round changes
   useEffect(() => {
     if (isRunning && totalMilliseconds === 0) {
@@ -153,6 +142,17 @@ const XY: React.FC<XYProps> = ({
       }
     }
   }, [totalMilliseconds, isRunning, rounds, targetMilliseconds]);
+
+  // Notify parent of changes
+  useEffect(() => {
+    if (newTimer && onChange) {
+      onChange({
+        workTime: { minutes: inputMinutes, seconds: inputSeconds },
+        totalRounds: rounds,
+        isValid: inputValid(),
+      });
+    }
+  }, [inputMinutes, inputSeconds, rounds, newTimer, onChange]);
 
   // Synchronize `totalMilliseconds` with `elapsedTime` in workout mode
   useEffect(() => {
