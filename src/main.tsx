@@ -1,7 +1,7 @@
 // main.tsx
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createHashRouter } from 'react-router-dom';
 
 import './index.css';
 import App from './App';
@@ -10,7 +10,7 @@ import DocumentationView from './views/DocumentationView';
 import TimersView from './views/TimersView';
 import WorkoutView from './views/WorkoutView';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
     {
         path: '/',
         element: <App />,
