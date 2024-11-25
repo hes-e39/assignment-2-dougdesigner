@@ -12,9 +12,7 @@ const DisplayTime: React.FC<DisplayTimeProps> = ({ minutes = 0, seconds = 0, hun
     return (
         <div className="mt-2 flex items-baseline gap-x-2">
             <div className="text-4xl font-semibold tracking-tight text-white font-mono">
-                {noHundredths
-                    ? `${formatTime(minutes)}:${formatTime(seconds)}`
-                    : `${formatTime(minutes)}:${formatTime(seconds)}.${formatTime(hundredths)}`}
+                {noHundredths ? `${formatTime(minutes)}:${formatTime(seconds)}` : `${formatTime(minutes)}:${formatTime(seconds)}.${formatTime(hundredths)}`}
             </div>
         </div>
     );

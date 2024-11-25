@@ -1,7 +1,7 @@
 interface PanelProps {
     title: string;
     description?: string;
-    children?: React.ReactNode; 
+    children?: React.ReactNode;
 }
 
 const Panel: React.FC<PanelProps> = ({ title, description, children }) => {
@@ -14,9 +14,7 @@ const Panel: React.FC<PanelProps> = ({ title, description, children }) => {
                         <p>{description}</p>
                     </div>
                 )}
-                <div className="mt-2">
-                    {children}
-                </div>
+                <div className="mt-2">{children}</div>
             </div>
         </div>
     );

@@ -1,13 +1,13 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-const primaryColor = "#ffa2bf";
+const primaryColor = '#ffa2bf';
 
-type Size = "small" | "medium" | "large";
+type Size = 'small' | 'medium' | 'large';
 
 const sizeMapping: Record<Size, number> = {
-  small: 10,
-  medium: 14,
-  large: 20,
+    small: 10,
+    medium: 14,
+    large: 20,
 };
 
 const Container = styled.div`
@@ -33,9 +33,9 @@ const Container = styled.div`
 
 const Dot = styled.span<{ size: number }>`
   display: block;
-  width: ${(props) => props.size}px;
-  height: ${(props) => props.size}px;
-  background-color: ${(props) => props.color};
+  width: ${props => props.size}px;
+  height: ${props => props.size}px;
+  background-color: ${props => props.color};
   border-radius: 100%;
   transform: scale(0.75);
   transform-origin: 50% 50%;
@@ -57,24 +57,24 @@ const DotGroup = styled.div`
 `;
 
 const Loading = ({
-  size = "medium",
-  color = primaryColor,
+    size = 'medium',
+    color = primaryColor,
 }: {
-  size: Size;
-  color: string;
+    size: Size;
+    color: string;
 }) => {
-  return (
-    <Container>
-      <DotGroup>
-        <Dot size={sizeMapping[size]} color={color} />
-        <Dot size={sizeMapping[size]} color={color} />
-      </DotGroup>
-      <DotGroup>
-        <Dot size={sizeMapping[size]} color={color} />
-        <Dot size={sizeMapping[size]} color={color} />
-      </DotGroup>
-    </Container>
-  );
+    return (
+        <Container>
+            <DotGroup>
+                <Dot size={sizeMapping[size]} color={color} />
+                <Dot size={sizeMapping[size]} color={color} />
+            </DotGroup>
+            <DotGroup>
+                <Dot size={sizeMapping[size]} color={color} />
+                <Dot size={sizeMapping[size]} color={color} />
+            </DotGroup>
+        </Container>
+    );
 };
 
 export default Loading;

@@ -31,59 +31,23 @@ const TabataInput: React.FC<TabataInputProps> = ({
     onRoundsChange = () => {},
     disabled = false,
 }) => {
-
     return (
         <div className="flex flex-col space-y-4 items-center mt-8">
             <div className="flex space-x-4">
                 <h1 className="text-lg font-semibold text-white self-center">Work Period:</h1>
-                <Select
-                    id="workMinutes"
-                    label="Minutes"
-                    value={workMinutes}
-                    options={minuteOptions}
-                    onChange={onWorkMinutesChange}
-                    disabled={disabled}
-                />
-                <Select
-                    id="workSeconds"
-                    label="Seconds"
-                    value={workSeconds}
-                    options={secondOptions}
-                    onChange={onWorkSecondsChange}
-                    disabled={disabled}
-                />
+                <Select id="workMinutes" label="Minutes" value={workMinutes} options={minuteOptions} onChange={onWorkMinutesChange} disabled={disabled} />
+                <Select id="workSeconds" label="Seconds" value={workSeconds} options={secondOptions} onChange={onWorkSecondsChange} disabled={disabled} />
             </div>
 
             <div className="flex space-x-4">
                 <h1 className="text-lg font-semibold text-white self-center">Rest Period:</h1>
-                <Select
-                    id="restMinutes"
-                    label="Minutes"
-                    value={restMinutes}
-                    options={minuteOptions}
-                    onChange={onRestMinutesChange}
-                    disabled={disabled}
-                />
-                <Select
-                    id="restSeconds"
-                    label="Seconds"
-                    value={restSeconds}
-                    options={secondOptions}
-                    onChange={onRestSecondsChange}
-                    disabled={disabled}
-                />
+                <Select id="restMinutes" label="Minutes" value={restMinutes} options={minuteOptions} onChange={onRestMinutesChange} disabled={disabled} />
+                <Select id="restSeconds" label="Seconds" value={restSeconds} options={secondOptions} onChange={onRestSecondsChange} disabled={disabled} />
             </div>
 
             <div className="flex space-x-4">
                 <div className="flex flex-row-reverse items-center">
-                    <Select
-                        id="rounds"
-                        label="Rounds"
-                        value={rounds}
-                        options={roundOptions}
-                        onChange={onRoundsChange}
-                        disabled={disabled}
-                    />
+                    <Select id="rounds" label="Rounds" value={rounds} options={roundOptions} onChange={onRoundsChange} disabled={disabled} />
                 </div>
             </div>
         </div>

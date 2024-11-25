@@ -15,40 +15,18 @@ interface InputsProps {
 }
 
 const Inputs: React.FC<InputsProps> = ({ minutes = 0, seconds = 0, rounds = 0, onMinutesChange = () => {}, onSecondsChange = () => {}, onRoundsChange = () => {}, disabled = false }) => {
-
     return (
         <div className="flex flex-col space-y-4 items-center mt-8">
             <div className="flex space-x-4">
-                <Select
-                    id="minutes"
-                    label="Minutes"
-                    value={minutes}
-                    options={minuteOptions}
-                    onChange={onMinutesChange}
-                    disabled={disabled}
-                />
-                <Select
-                    id="seconds"
-                    label="Seconds"
-                    value={seconds}
-                    options={secondOptions}
-                    onChange={onSecondsChange}
-                    disabled={disabled}
-                />
+                <Select id="minutes" label="Minutes" value={minutes} options={minuteOptions} onChange={onMinutesChange} disabled={disabled} />
+                <Select id="seconds" label="Seconds" value={seconds} options={secondOptions} onChange={onSecondsChange} disabled={disabled} />
             </div>
 
             {/* Rounds input */}
             {rounds > 0 && (
                 <div className="flex space-x-4">
                     <div className="flex flex-row-reverse items-center">
-                        <Select
-                            id="rounds"
-                            label="Rounds"
-                            value={rounds}
-                            options={roundOptions}
-                            onChange={onRoundsChange}
-                            disabled={disabled}
-                        />
+                        <Select id="rounds" label="Rounds" value={rounds} options={roundOptions} onChange={onRoundsChange} disabled={disabled} />
                     </div>
                 </div>
             )}
