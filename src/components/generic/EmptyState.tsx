@@ -8,11 +8,11 @@ interface EmptyStateProps {
 const EmptyState: React.FC<EmptyStateProps> = ({ title, description, buttonText, onButtonClick }) => {
     return (
         <div className="text-center">
-            <svg className="mx-auto size-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
+            <svg className="mx-auto size-12 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            <h3 className="mt-2 text-sm font-semibold text-gray-400">{title}</h3>
-            <p className="mt-1 text-sm text-gray-500">{description}</p>
+            <h3 className="mt-2 text-sm font-semibold text-slate-400">{title}</h3>
+            <p className="mt-1 text-sm text-slate-500">{description}</p>
             <div className="mt-6">
                 <button
                     type="button"

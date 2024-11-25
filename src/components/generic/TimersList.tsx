@@ -37,13 +37,13 @@ const TimersList: React.FC<TimersListProps> = ({
     };
 
     return (
-        <div className="w-full max-w-lg mt-6 bg-slate-900 px-4 py-6 sm:px-6 lg:px-8 rounded-lg">
+        <div className="w-full max-w-lg mt-4 bg-slate-900 px-4 py-6 sm:px-6 lg:px-8 rounded-lg">
             <p className="font-bold text-white truncate text-2xl tracking-tight">Timers</p>
             {timers.length === 0 ? (
                 <EmptyState
                     title="No timers"
                     description="Get started by adding a new timer to your workout."
-                    buttonText="New timer"
+                    buttonText="Add timer"
                     onButtonClick={() => navigate('/add')} // Navigate to the Add Timer view
                 />
             ) : (

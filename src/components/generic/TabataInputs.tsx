@@ -34,13 +34,13 @@ const TabataInput: React.FC<TabataInputProps> = ({
     return (
         <div className="flex flex-col space-y-4 items-center mt-8">
             <div className="flex space-x-4">
-                <h1 className="text-lg font-semibold text-white self-center">Work Period:</h1>
+                <h1 className="text-lg font-semibold text-white self-center">Work:</h1>
                 <Select id="workMinutes" label="Minutes" value={workMinutes} options={minuteOptions} onChange={onWorkMinutesChange} disabled={disabled} />
                 <Select id="workSeconds" label="Seconds" value={workSeconds} options={secondOptions} onChange={onWorkSecondsChange} disabled={disabled} />
             </div>
 
             <div className="flex space-x-4">
-                <h1 className="text-lg font-semibold text-white self-center">Rest Period:</h1>
+                <h1 className="text-lg font-semibold text-white self-center">Rest:</h1>
                 <Select id="restMinutes" label="Minutes" value={restMinutes} options={minuteOptions} onChange={onRestMinutesChange} disabled={disabled} />
                 <Select id="restSeconds" label="Seconds" value={restSeconds} options={secondOptions} onChange={onRestSecondsChange} disabled={disabled} />
             </div>

@@ -10,7 +10,7 @@ const Documentation = () => {
         <div>
             <div className="md:flex md:items-center md:justify-between py-8">
                 <div className="min-w-0 flex-1">
-                    <h2 className="text-2xl/7 font-bold text-white sm:truncate sm:text-3xl sm:tracking-tight">Documentation</h2>
+                    <h2 className="font-bold text-white truncate text-3xl tracking-tight">Documentation</h2>
                 </div>
             </div>
             <DocumentComponent

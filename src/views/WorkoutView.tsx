@@ -107,7 +107,7 @@ const WorkoutView = () => {
                 elapsedTime={totalElapsedTime}
             /> */}
 
-                    <div className="workout-timers space-y-4">
+                    <div className="workout-timers space-y-4 max-w-lg">
                         {timers.map((timer, index) => {
                             // Determine if this is the active timer
                             const isActive = currentTimerIndex === index;
@@ -157,7 +157,7 @@ const WorkoutView = () => {
                 </div>
             )}
 
-            <div className="flex flex-col items-center mb-8">
+            <div className="flex flex-col items-center mb-28 ">
                 <TimersList timers={timers} currentTimerIndex={currentTimerIndex} onRemoveTimer={removeTimer} disableRemove={!isWorkoutEditable} />
             </div>
         </div>

@@ -117,7 +117,7 @@ const AddTimerView = () => {
                 return <Tabata onChange={handleTimerChange} newTimer={true} />;
 
             default:
-                return <p className="text-slate-500 text-sm text-center mx-auto">Configure a valid timer and save it to add it to your workout.</p>;
+                return <p className="text-slate-500 text-sm text-left mr-auto">Configure a valid timer and save it to add it to your workout.</p>;
         }
     };
 
@@ -132,7 +132,7 @@ const AddTimerView = () => {
                         to="/"
                         className="inline-flex items-center rounded-full bg-slate-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-800"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="-ml-0.5 mr-1.5 size-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="-ml-0.5 mr-1.5 size-4">
                             <title>Back to workout</title>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
                         </svg>
@@ -152,9 +152,10 @@ const AddTimerView = () => {
             </div>
 
             {/* Timer configuration */}
-            <div className="max-w-2xl mt-6 bg-slate-900 px-4 py-6 sm:px-6 lg:px-8 rounded-lg items-center justify-center mx-auto">
-                <div className="mx-auto w-full max-w-xs">
-                    <div>
+            <div className="max-w-lg mt-6 bg-slate-900 px-4 py-6 sm:px-6 lg:px-8 rounded-lg items-center justify-center mx-auto">
+                <div className="mr-auto w-full max-w-xs">
+                    <p className="font-bold text-white truncate text-2xl tracking-tight">Timer configuration</p>
+                    <div className="py-6">
                         <label htmlFor="timerType" className="block text-lg font-semibold text-white">
                             Timer type
                         </label>
@@ -176,7 +177,7 @@ const AddTimerView = () => {
                     </div>
                 </div>
 
-                <div className="md:flex md:items-center md:justify-between py-8">{renderTimerInputs()}</div>
+                <div className="md:flex md:items-center md:justify-between">{renderTimerInputs()}</div>
 
                 <div className="hidden mx-auto w-full max-w-sm">
                     <TimersList timers={timers} onRemoveTimer={removeTimer} />
