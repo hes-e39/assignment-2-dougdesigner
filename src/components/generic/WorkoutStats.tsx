@@ -48,8 +48,8 @@ const WorkoutStats: React.FC<WorkoutStatsProps> = ({
                     <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8 hidden">
                         <p className="text-sm/6 font-medium text-gray-400">Current timer</p>
                         <p className="mt-2 flex items-baseline gap-x-2">
-                            <span className="text-4xl font-semibold tracking-tight text-white">{currentTimer}</span>
-                            <span className="text-sm text-gray-400">/ {totalTimers}</span>
+                            <span className="text-4xl font-semibold tracking-tight text-white font-mono">{currentTimer}</span>
+                            <span className="text-sm text-gray-400 font-mono">/ {totalTimers}</span>
                         </p>
                     </div>
 
