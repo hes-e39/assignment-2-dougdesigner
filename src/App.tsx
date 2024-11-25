@@ -4,7 +4,7 @@ import { WorkoutProvider } from "./context/WorkoutContext";
 
 function App() {
   return (
-    <div>
+    <WorkoutProvider>
       <nav className="bg-gray-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
@@ -53,16 +53,8 @@ function App() {
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <Outlet />
       </div>
-    </div>
+    </WorkoutProvider>
   );
 }
 
-const Wrap = () => {
-  return (
-      <WorkoutProvider>
-          <App />
-      </WorkoutProvider>
-  );
-};
-
-export default Wrap;
+export default App;
