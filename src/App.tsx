@@ -1,5 +1,6 @@
 // App.tsx
 import { NavLink, Outlet } from "react-router-dom";
+import { WorkoutProvider } from "./context/WorkoutContext";
 
 function App() {
   return (
@@ -56,4 +57,12 @@ function App() {
   );
 }
 
-export default App;
+const Wrap = () => {
+  return (
+      <WorkoutProvider>
+          <App />
+      </WorkoutProvider>
+  );
+};
+
+export default Wrap;
