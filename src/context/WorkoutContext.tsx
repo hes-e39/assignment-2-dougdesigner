@@ -78,7 +78,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
         return () => {
             if (interval) clearInterval(interval);
         };
-    }, [currentTimerIndex, timers, elapsedTime, totalElapsedTime]);
+    }, [currentTimerIndex, timers, elapsedTime]);
 
     // Automatically advance the timer when the current one is complete
     useEffect(() => {
