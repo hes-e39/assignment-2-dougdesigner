@@ -52,15 +52,17 @@ const TimersList: React.FC<TimersListProps> = ({
               <div className="min-w-0 flex-auto">
                 <div className="flex items-center gap-x-3">
                   {/* Timer Icon */}
-                  <div
+                    <div
                     className={`flex-none rounded-full p-1 ${
-                      index === currentTimerIndex
-                        ? "bg-green-400/10 text-green-400"
-                        : timer.state === "completed"
-                        ? "bg-blue-400/10 text-blue-400"
-                        : "bg-gray-100/10 text-gray-500"
+                      timer.state === "running"
+                      ? "bg-green-400/10 text-green-400"
+                      : timer.state === "completed"
+                      ? "bg-blue-400/10 text-blue-400"
+                      : timer.state === "paused"
+                      ? "bg-orange-400/10 text-orange-400"
+                      : "bg-gray-100/10 text-gray-500"
                     }`}
-                  >
+                    >
                     <div className="size-2 rounded-full bg-current"></div>
                   </div>
 
@@ -109,7 +111,9 @@ const TimersList: React.FC<TimersListProps> = ({
               {/* Timer Badge and Remove Button */}
               <div className="flex items-center space-x-2">
                 {/* Timer Status Badge */}
-                <TimerBadge status={getTimerStatus(timer, index)} />
+                {disableRemove && (
+                  <TimerBadge status={getTimerStatus(timer, index)} />
+                )}
 
                 {/* Remove Button */}
                 {!disableRemove && onRemoveTimer && (

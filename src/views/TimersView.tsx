@@ -29,7 +29,10 @@ const TimersView = () => {
       </div>
       <div className="flex flex-col items-center space-y-4">
         <Stopwatch />
-        <Countdown />
+        <Countdown
+          workoutTimer={false}
+          newTimer={false}
+        />
         <XY />
         <Tabata />
       </div>

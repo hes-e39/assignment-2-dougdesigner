@@ -19,9 +19,11 @@ const WorkoutView = () => {
     nextTimer,
     resetWorkout,
     pauseTimer,
+    resumeTimer,
     isWorkoutEditable,
     elapsedTime,
     totalElapsedTime,
+    totalWorkoutTime
   } = useWorkout();
 
   const isWorkoutPaused =
@@ -30,19 +32,6 @@ const WorkoutView = () => {
     currentTimerIndex !== null && timers[currentTimerIndex]?.state === "running";
   const isWorkoutActive = isWorkoutPaused || isWorkoutRunning;
   const isWorkoutCompleted = timers.every((timer) => timer.state === "completed");
-
-  // Calculate total workout time
-  const totalWorkoutTime = timers.reduce((total, timer) => {
-    const workTime = timer.workTime.minutes * 60 + timer.workTime.seconds;
-    const restTime = timer.restTime
-      ? timer.restTime.minutes * 60 + timer.restTime.seconds
-      : 0;
-    const totalTimePerRound = workTime + restTime;
-    const totalTime = timer.rounds
-      ? totalTimePerRound * timer.rounds
-      : totalTimePerRound;
-    return total + totalTime;
-  }, 0);
 
   // Automatically transition to the next timer when the current one completes
   useEffect(() => {
@@ -134,7 +123,7 @@ const WorkoutView = () => {
               />
             )}
             {isWorkoutRunning && <Button type="pause" onClick={pauseTimer} />}
-            {isWorkoutPaused && <Button type="resume" onClick={startWorkout} />}
+            {isWorkoutPaused && <Button type="resume" onClick={resumeTimer} />}
             <Button
               type="fastforward"
               onClick={handleSkipTimer}
@@ -160,7 +149,11 @@ const WorkoutView = () => {
                         return (
                         <div key={timer.id} className="timer-container">
                             <Stopwatch 
-                                // elapsedTime={isActive ? elapsedTime : 0} 
+                                workoutTimer
+                                workTime={timer.workTime}
+                                state={timer.state}
+                                active={isActive}
+                                elapsedTime={isActive ? elapsedTime : 0} 
                             />
                         </div>
                         );
@@ -169,8 +162,10 @@ const WorkoutView = () => {
                         return (
                         <div key={timer.id} className="timer-container">
                             <Countdown
-                                workoutTimer={true}
+                                workoutTimer
                                 workTime={timer.workTime}
+                                state={timer.state}
+                                active={isActive}
                                 elapsedTime={isActive ? elapsedTime : 0}
                             />
                         </div>
@@ -214,8 +209,6 @@ const WorkoutView = () => {
 
 
       )}
-
-
 
       <div className="flex flex-col items-center mb-8">
         <TimersList

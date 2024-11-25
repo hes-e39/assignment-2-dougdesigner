@@ -12,6 +12,8 @@ interface CountdownProps {
   workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout
   workTime?: { minutes: number; seconds: number }; // Work time configuration
   elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
+  active?: boolean; // Determines if the currently active timer in a workout
+  state?: "not running" | "running" | "paused" | "completed";
 }
 
 const Countdown: React.FC<CountdownProps> = ({ 
@@ -19,7 +21,9 @@ const Countdown: React.FC<CountdownProps> = ({
   elapsedTime = 0,
   onChange, 
   newTimer = false,
-  workoutTimer = false, 
+  workoutTimer = false,
+  active = false,
+  state = "not running" 
 }) => {
   const [inputMinutes, setInputMinutes] = useState(workTime.minutes);
   const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
@@ -37,15 +41,6 @@ const Countdown: React.FC<CountdownProps> = ({
   ? workTime.minutes * 60000 + workTime.seconds * 1000
   : inputMinutes * 60000 + inputSeconds * 1000;
 
-  // Reset timer function
-  const resetTimer = () => {
-    setIsRunning(false);
-    setIsPaused(false);
-    setIsCompleted(false);
-    setTotalMilliseconds(targetMilliseconds);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
-
   // Countdown function
   const tick = () => {
     setTotalMilliseconds((prevMilliseconds) => {
@@ -60,9 +55,18 @@ const Countdown: React.FC<CountdownProps> = ({
 
   // Start timer function
   const startTimer = () => {
-    setTotalMilliseconds(targetMilliseconds);
+    // setTotalMilliseconds(targetMilliseconds);
     setIsRunning(true);
     intervalRef.current = window.setInterval(tick, 10);
+  };
+
+  // Reset timer function
+  const resetTimer = () => {
+    setIsRunning(false);
+    setIsPaused(false);
+    setIsCompleted(false);
+    setTotalMilliseconds(targetMilliseconds);
+    if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
   // Pause timer function
@@ -106,7 +110,7 @@ const Countdown: React.FC<CountdownProps> = ({
     return targetMilliseconds > 0;
   };
 
-  // Notify parent of changes
+  // Notify parent of changes during new timer configuration
   useEffect(() => {
     if (newTimer && onChange) {
       onChange({
@@ -115,6 +119,40 @@ const Countdown: React.FC<CountdownProps> = ({
       });
     }
   }, [inputMinutes, inputSeconds, newTimer, onChange]);
+
+    // Synchronize `totalMilliseconds` with `elapsedTime`
+    useEffect(() => {
+      if (workoutTimer && active) {
+        const remainingMilliseconds = targetMilliseconds - elapsedTime;
+        setTotalMilliseconds(Math.max(remainingMilliseconds, 0));
+      }
+    }, [elapsedTime, targetMilliseconds, workoutTimer]);
+  
+    useEffect(() => {
+      // Handle timer state changes, including reset
+      if (workoutTimer) {
+        if (state === "not running") {
+          resetTimer(); // Always reset the timer, regardless of `active`
+        } else if (state === "completed") {
+          fastForwardTimer(); // Fast forward the timer if completed
+        }
+          else if (active) {
+          // Handle only the active timer for running, pausing, and completing
+          switch (state) {
+            case "running":
+              if (isPaused) {
+                resumeTimer();
+              } else {
+                startTimer();
+              }
+              break;
+            case "paused":
+              pauseTimer();
+              break;
+          }
+        }
+      }
+    }, [state, active, workoutTimer]);
 
   // Clear interval on unmount
   useEffect(() => {
@@ -132,6 +170,7 @@ const Countdown: React.FC<CountdownProps> = ({
           minutes={getDisplayMinutes(totalMilliseconds, isRunning, inputMinutes)}
           seconds={getDisplaySeconds(totalMilliseconds, isRunning, inputSeconds)}
           hundredths={getDisplayHundredths(totalMilliseconds, isRunning)}
+          noHundredths={workoutTimer ? true : false}
         />
       </div>
         )}
@@ -150,7 +189,7 @@ const Countdown: React.FC<CountdownProps> = ({
       </div>
 
       {/* Timer Buttons */}
-      {!newTimer || !workoutTimer && (
+      {!newTimer && !workoutTimer && (
         <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
           {!isCompleted && (
             <>

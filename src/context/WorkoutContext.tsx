@@ -10,7 +10,7 @@ export interface TimerConfig {
   currentRound?: number; // Optional, for Tabata and XY
   timerMode?: "work" | "rest"; // Optional, for Tabata and XY
   state: "not running" | "running" | "paused" | "completed";
-  skipped: boolean; // Track if the timer was skipped
+  skipped?: boolean; // Track if the timer was skipped
 }
 
 // Context State
@@ -27,6 +27,7 @@ interface WorkoutContextState {
   nextTimer: (skip?: boolean) => void; // Optional skip parameter
   resetWorkout: () => void;
   pauseTimer: () => void;
+  resumeTimer: () => void;
 }
 
 // Create Context
@@ -55,7 +56,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
   const [totalElapsedTime, setTotalElapsedTime] = useState<number>(0); // Total elapsed time for the workout
   const [totalWorkoutTime, setTotalWorkoutTime] = useState<number>(0); // Total workout time in seconds 
   const [isWorkoutEditable, setIsWorkoutEditable] = useState<boolean>(true); // Track if workout is editable
-
+  
   // Persist timers to localStorage
   useEffect(() => {
     localStorage.setItem("workoutTimers", JSON.stringify(timers));
@@ -93,7 +94,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
     if (currentTimerIndex === null) return;
 
     const currentTimer = timers[currentTimerIndex];
-    if (currentTimer?.state !== "running") return;
+    if (currentTimer?.state !!== "running") return;
 
     const workTime =
       currentTimer.workTime.minutes * 60 + currentTimer.workTime.seconds;
@@ -122,23 +123,12 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
     setTimers((prevTimers) => prevTimers.filter((timer) => timer.id !== id));
   };
 
-  // Start or resume the workout
+  // Start the workout from the beginning
   const startWorkout = () => {
-    if (
-      currentTimerIndex !== null &&
-      timers[currentTimerIndex]?.state === "paused"
-    ) {
-      // Resume the paused timer
-      setTimers((prevTimers) =>
-        prevTimers.map((timer, index) => ({
-          ...timer,
-          state: index === currentTimerIndex ? "running" : timer.state,
-        }))
-      );
-    } else if (timers.length > 0) {
-      // Start the workout from the beginning
-      setIsWorkoutEditable(false);
-      setCurrentTimerIndex(0);
+    if (timers.length > 0) {
+      setIsWorkoutEditable(false); // Lock the workout from further edits
+      setCurrentTimerIndex(0); // Set the first timer as the active timer
+      setElapsedTime(0); // Reset elapsed time for the first timer
       setTimers((prevTimers) =>
         prevTimers.map((timer, index) => ({
           ...timer,
@@ -148,33 +138,19 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
     }
   };
 
-  // Move to the next timer
-  const nextTimer = (skip: boolean = false) => {
-    if (currentTimerIndex !== null) {
-      const nextIndex = currentTimerIndex + 1;
+  // Resume a paused timer
+  const resumeTimer = () => {
+    if (currentTimerIndex !== null && timers[currentTimerIndex]?.state === "paused") {
       setTimers((prevTimers) =>
         prevTimers.map((timer, index) => ({
           ...timer,
-          state:
-            index === nextIndex
-              ? "running"
-              : index < nextIndex
-              ? "completed"
-              : "not running",
-          skipped: skip && index === currentTimerIndex ? true : timer.skipped,
+          state: index === currentTimerIndex ? "running" : timer.state,
         }))
       );
-
-      if (nextIndex < timers.length) {
-        setCurrentTimerIndex(nextIndex);
-      } else {
-        // Mark the final timer as completed
-        setCurrentTimerIndex(null);
-      }
     }
   };
 
-  // Pause the current timer
+  // Pause the currently active timer
   const pauseTimer = () => {
     if (currentTimerIndex !== null) {
       setTimers((prevTimers) =>
@@ -183,6 +159,45 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
           state: index === currentTimerIndex ? "paused" : timer.state,
         }))
       );
+    }
+  };
+
+  // Move to the next timer
+  const nextTimer = (skip: boolean = false) => {
+    if (currentTimerIndex !== null) {
+      const nextIndex = currentTimerIndex + 1;
+  
+      setTimers((prevTimers) =>
+        prevTimers.map((timer, index) => {
+          // Handle the current timer
+          if (index === currentTimerIndex) {
+            return {
+              ...timer,
+              state: "completed", // Mark current timer as completed
+              skipped: skip ? true : timer.skipped, // Mark as skipped if applicable
+            };
+          }
+  
+          // Handle the next timer
+          if (index === nextIndex) {
+            return {
+              ...timer,
+              state: "running", // Start the next timer
+            };
+          }
+  
+          // Return other timers unchanged
+          return timer;
+        })
+      );
+  
+      if (nextIndex < timers.length) {
+        setCurrentTimerIndex(nextIndex); // Update to the next timer
+        setElapsedTime(0); // Reset elapsed time for the new timer
+      } else {
+        // No more timers, end the workout
+        setCurrentTimerIndex(null);
+      }
     }
   };
 
@@ -196,6 +211,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
       prevTimers.map((timer) => ({
         ...timer,
         state: "not running",
+        currentRound: 1,
         skipped: false, // Reset skipped status
       }))
     );
@@ -233,6 +249,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
         nextTimer,
         resetWorkout,
         pauseTimer,
+        resumeTimer,
       }}
     >
       {children}
