@@ -1,7 +1,7 @@
 import React from "react";
 import DisplayTime from "../generic/DisplayTime";
 import DisplayRounds from "../generic/DisplayRounds";
-import DisplayMode from "../generic/DisplayMode";
+// import DisplayMode from "../generic/DisplayMode";
 
 interface WorkoutStatsProps {
   totalWorkoutTime: number; // Total workout time in seconds
