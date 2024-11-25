@@ -189,12 +189,13 @@ const WorkoutView = () => {
                         return (
                         <div key={timer.id} className="timer-container">
                             <XY
-                            // workTime={timer.workTime}
-                            // restTime={timer.restTime || { minutes: 0, seconds: 0 }}
-                            // rounds={timer.rounds || 1}
-                            // currentRound={timer.currentRound || 1}
-                            // timerMode={timer.timerMode || "work"}
-                            // elapsedTime={isActive ? elapsedTime : 0}
+                            workoutTimer
+                            workTime={timer.workTime}
+                            state={timer.state}
+                            active={isActive}
+                            elapsedTime={isActive ? elapsedTime : 0}
+                            rounds={timer.rounds}
+                            currentRound={timer.currentRound}
                             />
                         </div>
                         );

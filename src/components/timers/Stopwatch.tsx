@@ -9,18 +9,33 @@ import { getMinutes, getSeconds, getHundredths } from '../../utils/helpers';
 interface StopwatchProps {
   onChange?: (config: { workTime: { minutes: number; seconds: number }, isValid: boolean }) => void;
   newTimer?: boolean; // Determines if this is a new timer being configured
+  workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout
+  workTime?: { minutes: number; seconds: number }; // Work time configuration
+  elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
+  active?: boolean; // Determines if the currently active timer in a workout
+  state?: "not running" | "running" | "paused" | "completed";
 }
 
-const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false }) => {
-  const [inputMinutes, setInputMinutes] = useState(0);
-  const [inputSeconds, setInputSeconds] = useState(0);
+const Stopwatch: React.FC<StopwatchProps> = ({ 
+  onChange, 
+  newTimer = false,
+  workoutTimer = false,
+  elapsedTime = 0,
+  active = false,
+  state = "not running",
+  workTime = { minutes: 0, seconds: 0 }
+}) => {
+  const [inputMinutes, setInputMinutes] = useState(workTime.minutes);
+  const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
   const [totalMilliseconds, setTotalMilliseconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const intervalRef = useRef<number | null>(null);
 
-  const targetMilliseconds = inputMinutes * 60000 + inputSeconds * 1000;
+  const targetMilliseconds = workoutTimer
+  ? workTime.minutes * 60000 + workTime.seconds * 1000
+  : inputMinutes * 60000 + inputSeconds * 1000;
 
   // Stopwatch function
   const tick = () => {
@@ -36,9 +51,17 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false }) => 
 
   // Start timer function
   const startTimer = () => {
-    setTotalMilliseconds(0);
     setIsRunning(true);
     intervalRef.current = setInterval(tick, 10);
+  };
+
+  // Reset timer function
+  const resetTimer = () => {
+    setIsRunning(false);
+    setIsPaused(false);
+    setIsCompleted(false);
+    setTotalMilliseconds(0);
+    if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
   // Pause timer function
@@ -62,15 +85,6 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false }) => 
     setIsPaused(false);
   };
 
-  // Reset timer function
-  const resetTimer = () => {
-    setIsRunning(false);
-    setIsPaused(false);
-    setIsCompleted(false);
-    setTotalMilliseconds(0);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
-
   // Input change functions
   const handleMinutesChange = (minutes: number) => {
     setInputMinutes(minutes);
@@ -82,7 +96,7 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false }) => 
 
   // Check if input is valid
   const inputValid = () => {
-    return inputMinutes > 0 || inputSeconds > 0;
+    return targetMilliseconds > 0;
   };
 
   // Notify parent of changes
@@ -90,10 +104,41 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false }) => 
     if (newTimer && onChange) {
       onChange({
         workTime: { minutes: inputMinutes, seconds: inputSeconds },
-        isValid: inputValid(), // Call inputValid() to determine if the input is valid
+        isValid: inputValid(),
       });
     }
   }, [inputMinutes, inputSeconds, onChange, newTimer]);
+
+  // Synchronize `totalMilliseconds` with `elapsedTime` if in workout mode
+  useEffect(() => {
+    if (workoutTimer && active) {
+      setTotalMilliseconds(elapsedTime);
+    }
+  }, [elapsedTime, workoutTimer, active]);
+
+  // Handle timer state changes
+  useEffect(() => {
+    if (workoutTimer) {
+      if (state === "not running") {
+        resetTimer(); // Always reset the timer
+      } else if (state === "completed") {
+        fastForwardTimer(); // Mark as completed
+      } else if (active) {
+        switch (state) {
+          case "running":
+            if (isPaused) {
+              resumeTimer();
+            } else {
+              startTimer();
+            }
+            break;
+          case "paused":
+            pauseTimer();
+            break;
+        }
+      }
+    }
+  }, [state, active, workoutTimer]);
 
   useEffect(() => {
     return () => {
@@ -123,12 +168,12 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false }) => 
           seconds={inputSeconds}
           onMinutesChange={handleMinutesChange}
           onSecondsChange={handleSecondsChange}
-          disabled={isRunning || isPaused || isCompleted}
+          disabled={isRunning || isPaused || isCompleted || workoutTimer}
         />
       </div>
 
       {/* Timer Buttons */}
-      {!newTimer && (
+      {!newTimer && !workoutTimer && (
         <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
           {!isCompleted && (
             <>

@@ -62,31 +62,31 @@ const WorkoutStats: React.FC<WorkoutStatsProps> = ({
           {/* Work or Rest Period */}
           <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
             <p className="text-sm/6 font-medium text-gray-400">Current period</p>
-            <p className="mt-2 flex items-baseline gap-x-2">
+            <div className="mt-2 flex items-baseline gap-x-2">
               <DisplayMode mode={isWorkPeriod ? "work" : "rest"} />
-            </p>
+            </div>
           </div>
 
           {/* Current Round */}
           <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
             <p className="text-sm/6 font-medium text-gray-400">Current timer</p>
-            <p className="mt-2 flex items-baseline gap-x-2">
+            <div className="mt-2 flex items-baseline gap-x-2">
               <DisplayRounds
                 currentRound={currentTimer} // Default to 1 if undefined
                 rounds={totalTimers} // Default to 1 if undefined
               />
-            </p>
+            </div>
           </div>
 
           {/* Current Rounds */}
           <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8 hidden">
             <p className="text-sm/6 font-medium text-gray-400">Current rounds</p>
-            <p className="mt-2 flex items-baseline gap-x-2">
+            <div className="mt-2 flex items-baseline gap-x-2">
               <DisplayRounds
                 currentRound={currentRounds.current || 1} // Default to 1 if undefined
                 rounds={currentRounds.total || 1} // Default to 1 if undefined
               />
-            </p>
+            </div>
           </div>
         </div>
       </div>

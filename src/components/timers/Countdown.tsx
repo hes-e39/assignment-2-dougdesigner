@@ -55,7 +55,6 @@ const Countdown: React.FC<CountdownProps> = ({
 
   // Start timer function
   const startTimer = () => {
-    // setTotalMilliseconds(targetMilliseconds);
     setIsRunning(true);
     intervalRef.current = window.setInterval(tick, 10);
   };
@@ -93,16 +92,12 @@ const Countdown: React.FC<CountdownProps> = ({
   // Input change for minutes and seconds functions
   const handleMinutesChange = (minutes: number) => {
     setInputMinutes(minutes);
-    if (!isRunning) {
-      setTotalMilliseconds(minutes * 60000 + inputSeconds * 1000);
-    }
+    setTotalMilliseconds(targetMilliseconds);
   };
 
   const handleSecondsChange = (seconds: number) => {
     setInputSeconds(seconds);
-    if (!isRunning) {
-      setTotalMilliseconds(inputMinutes * 60000 + seconds * 1000);
-    }
+    setTotalMilliseconds(targetMilliseconds)
   };
 
   // Check if input is valid
@@ -170,7 +165,7 @@ const Countdown: React.FC<CountdownProps> = ({
           minutes={getDisplayMinutes(totalMilliseconds, isRunning, inputMinutes)}
           seconds={getDisplaySeconds(totalMilliseconds, isRunning, inputSeconds)}
           hundredths={getDisplayHundredths(totalMilliseconds, isRunning)}
-          noHundredths={workoutTimer ? true : false}
+          // noHundredths={workoutTimer ? true : false}
         />
       </div>
         )}
