@@ -194,8 +194,7 @@ const WorkoutView = () => {
                             state={timer.state}
                             active={isActive}
                             elapsedTime={isActive ? elapsedTime : 0}
-                            rounds={timer.rounds}
-                            currentRound={timer.currentRound}
+                            totalRounds={timer.totalRounds}
                             />
                         </div>
                         );

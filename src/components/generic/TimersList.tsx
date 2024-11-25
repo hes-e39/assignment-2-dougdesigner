@@ -92,7 +92,7 @@ const TimersList: React.FC<TimersListProps> = ({
                       </p>
                     </>
                   )}
-                  {timer.rounds && (
+                  {timer.totalRounds && (
                     <>
                       <svg
                         viewBox="0 0 2 2"
@@ -101,7 +101,7 @@ const TimersList: React.FC<TimersListProps> = ({
                         <circle cx="1" cy="1" r="1" />
                       </svg>
                       <p>
-                        <strong>Rounds</strong> {timer.rounds}
+                        <strong>Rounds</strong> {timer.totalRounds}
                       </p>
                     </>
                   )}

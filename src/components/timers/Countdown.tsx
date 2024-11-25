@@ -7,7 +7,10 @@ import { useEffect, useRef, useState } from 'react';
 import { getDisplayMinutes, getDisplaySeconds, getDisplayHundredths } from '../../utils/helpers';
 
 interface CountdownProps {
-  onChange?: (config: { workTime: { minutes: number; seconds: number }; isValid: boolean }) => void;
+  onChange?: (config: { 
+    workTime: { minutes: number; seconds: number }; 
+    isValid: boolean 
+  }) => void;
   newTimer?: boolean; // Determines if this is a new timer being configured
   workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout
   workTime?: { minutes: number; seconds: number }; // Work time configuration

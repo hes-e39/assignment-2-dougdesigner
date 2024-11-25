@@ -6,8 +6,8 @@ export interface TimerConfig {
   type: "stopwatch" | "countdown" | "tabata" | "xy";
   workTime: { minutes: number; seconds: number };
   restTime?: { minutes: number; seconds: number }; // Optional, for Tabata and XY
-  rounds?: number; // Optional, for Tabata and XY
-  currentRound?: number; // Optional, for Tabata and XY
+  totalRounds?: number; // Optional, for Tabata and XY
+  // currentRound?: number; // Optional, for Tabata and XY
   timerMode?: "work" | "rest"; // Optional, for Tabata and XY
   state: "not running" | "running" | "paused" | "completed";
   skipped?: boolean; // Track if the timer was skipped
@@ -102,7 +102,9 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
       ? currentTimer.restTime.minutes * 60 + currentTimer.restTime.seconds
       : 0;
 
-    const totalDuration = (workTime + restTime) * 1000; // Convert to milliseconds
+    const timerRounds = currentTimer.totalRounds || 1;
+
+    const totalDuration = (workTime + restTime) * timerRounds * 1000; // Convert to milliseconds
 
     if (elapsedTime >= totalDuration) {
       nextTimer(); // Move to the next timer
@@ -211,7 +213,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
       prevTimers.map((timer) => ({
         ...timer,
         state: "not running",
-        currentRound: 1,
+        // currentRound: 1,
         skipped: false, // Reset skipped status
       }))
     );
@@ -225,8 +227,8 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({
         ? timer.restTime.minutes * 60 + timer.restTime.seconds
         : 0;
       const totalTimePerRound = workTime + restTime;
-      const totalTime = timer.rounds
-        ? totalTimePerRound * timer.rounds
+      const totalTime = timer.totalRounds
+        ? totalTimePerRound * timer.totalRounds
         : totalTimePerRound;
       return total + totalTime;
     }, 0);

@@ -10,34 +10,47 @@ import { getMinutes, getSeconds, getHundredths } from '../../utils/helpers';
 interface XYProps {
   onChange?: (config: { 
     workTime: { minutes: number; seconds: number }; 
-    rounds: number; 
+    totalRounds: number; 
     isValid: boolean 
   }) => void;
   newTimer?: boolean; // Determines if this is a new timer being configured
+  workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout  
+  workTime?: { minutes: number; seconds: number }; // Work time configuration
+  totalRounds?: number; // Number of rounds
+  // currentRound?: number; // Current round
+  elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
+  active?: boolean; // Determines if the currently active timer in a workout
+  state?: "not running" | "running" | "paused" | "completed";
 }
 
-const XY: React.FC<XYProps> = ({ onChange, newTimer = false }) => {
-  const [inputMinutes, setInputMinutes] = useState(0);
-  const [inputSeconds, setInputSeconds] = useState(0);
-  const [rounds, setRounds] = useState(1);
-  const [totalMilliseconds, setTotalMilliseconds] = useState(0);
+const XY: React.FC<XYProps> = ({ 
+  onChange, 
+  newTimer = false,
+  workoutTimer = false,
+  workTime = { minutes: 0, seconds: 0 },
+  elapsedTime = 0,
+  totalRounds = 1,
+  // currentRound = 1,
+  active = false,
+  state = "not running"
+}) => {
+  const [inputMinutes, setInputMinutes] = useState(workTime.minutes);
+  const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
+  const [rounds, setRounds] = useState(totalRounds);
+  const [totalMilliseconds, setTotalMilliseconds] = useState(
+    workoutTimer
+      ? workTime.minutes * 60000 + workTime.seconds * 1000 - elapsedTime
+      : 0
+  );
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const currentRoundRef = useRef<number>(1);
   const intervalRef = useRef<number | null>(null);
 
-  const targetMilliseconds = inputMinutes * 60000 + inputSeconds * 1000;
-
-  // Reset timer function
-  const resetTimer = () => {
-    setIsRunning(false);
-    setIsPaused(false);
-    setIsCompleted(false);
-    currentRoundRef.current = 1;
-    setTotalMilliseconds(targetMilliseconds);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
+  const targetMilliseconds = workoutTimer
+  ? workTime.minutes * 60000 + workTime.seconds * 1000
+  : inputMinutes * 60000 + inputSeconds * 1000;
 
   // Countdown function
   const tick = () => {
@@ -50,28 +63,22 @@ const XY: React.FC<XYProps> = ({ onChange, newTimer = false }) => {
     });
   };
 
-  // Watch for when the timer reaches zero and handle round changes
-  useEffect(() => {
-    if (isRunning && totalMilliseconds === 0) {
-      if (currentRoundRef.current < rounds) {
-        // Move to the next round
-        setTimeout(() => {
-          currentRoundRef.current += 1;
-          setTotalMilliseconds(targetMilliseconds); // Reset timer for the next round
-        }, 100); // Delay to smooth the UI update
-      } else {
-        // If all rounds are complete, stop the timer
-        fastForwardTimer();
-      }
-    }
-  }, [totalMilliseconds, isRunning, rounds, targetMilliseconds]);
-
   // Start timer function
   const startTimer = () => {
     currentRoundRef.current = 1;
     setTotalMilliseconds(targetMilliseconds);
     setIsRunning(true);
     intervalRef.current = window.setInterval(tick, 10);
+  };
+
+  // Reset timer function
+  const resetTimer = () => {
+    setIsRunning(false);
+    setIsPaused(false);
+    setIsCompleted(false);
+    currentRoundRef.current = 1;
+    setTotalMilliseconds(targetMilliseconds);
+    if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
   // Pause timer function
@@ -117,7 +124,7 @@ const XY: React.FC<XYProps> = ({ onChange, newTimer = false }) => {
 
   // Check if input is valid
   const inputValid = () => {
-    return (inputMinutes > 0 || inputSeconds > 0) && rounds > 0;
+    return targetMilliseconds > 0;
   };
 
   // Notify parent of changes
@@ -125,11 +132,60 @@ const XY: React.FC<XYProps> = ({ onChange, newTimer = false }) => {
     if (newTimer && onChange) {
       onChange({
         workTime: { minutes: inputMinutes, seconds: inputSeconds },
-        rounds,
+        totalRounds: rounds,
         isValid: inputValid(),
       });
     }
   }, [inputMinutes, inputSeconds, rounds, newTimer, onChange]);
+
+  // Watch for when the timer reaches zero and handle round changes
+  useEffect(() => {
+    if (isRunning && totalMilliseconds === 0) {
+      if (currentRoundRef.current < rounds) {
+        // Move to the next round
+        setTimeout(() => {
+          currentRoundRef.current += 1;
+          setTotalMilliseconds(targetMilliseconds); // Reset timer for the next round
+        }, 100); // Delay to smooth the UI update
+      } else {
+        // If all rounds are complete, stop the timer
+        fastForwardTimer();
+      }
+    }
+  }, [totalMilliseconds, isRunning, rounds, targetMilliseconds]);
+
+  // Synchronize `totalMilliseconds` with `elapsedTime` in workout mode
+  useEffect(() => {
+    if (workoutTimer && active) {
+      const elapsedForRound = elapsedTime % targetMilliseconds;
+      setTotalMilliseconds(Math.max(targetMilliseconds - elapsedForRound, 0));
+      currentRoundRef.current = Math.min(Math.floor(elapsedTime / targetMilliseconds) + 1, rounds);
+    }
+  }, [elapsedTime, workoutTimer, active, targetMilliseconds, rounds]);
+
+  // Handle timer state changes
+  useEffect(() => {
+    if (workoutTimer) {
+      if (state === "not running") {
+        resetTimer(); // Reset the timer for all states
+      } else if (state === "completed") {
+        fastForwardTimer(); // Mark as completed
+      } else if (active) {
+        switch (state) {
+          case "running":
+            if (isPaused) {
+              resumeTimer();
+            } else {
+              startTimer();
+            }
+            break;
+          case "paused":
+            pauseTimer();
+            break;
+        }
+      }
+    }
+  }, [state, active, workoutTimer]);
 
   // Clear interval on unmount
   useEffect(() => {
@@ -174,12 +230,12 @@ const XY: React.FC<XYProps> = ({ onChange, newTimer = false }) => {
           onMinutesChange={handleMinutesChange}
           onSecondsChange={handleSecondsChange}
           onRoundsChange={handleRoundsChange}
-          disabled={isRunning || isPaused || isCompleted}
+          disabled={isRunning || isPaused || isCompleted || workoutTimer}
         />
       </div>
 
       {/* Timer Buttons */}
-      {!newTimer && (
+      {!newTimer && !workoutTimer && (
         <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
           {!isCompleted && (
             <>
